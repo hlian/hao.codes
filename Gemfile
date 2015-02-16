@@ -1,3 +1,3 @@
 source 'https://rubygems.org'
 gem 'github-pages'
-gem 'rouge'
+gem 'rouge', "=1.6.2"
