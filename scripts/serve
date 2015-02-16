@@ -1,5 +1,6 @@
 #!/bin/sh
+BASE=$(dirname $0)
+pushd "$BASE/../" > /dev/null
 set -eu
-pushd src
 bundle exec jekyll serve --watch --drafts
-popd
+popd > /dev/null
