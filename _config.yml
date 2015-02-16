@@ -9,8 +9,8 @@ twitter_username:
   trello
 github_username:
   trello
-highligher:
-  pygments
+highlighter:
+  rouge
 safe:
   true
 lsi:
