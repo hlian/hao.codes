@@ -14,3 +14,17 @@ pre {
   padding: 1em;
   margin: 0 -1em;
 }
+
+div.footnotes {
+  margin-top: 3em;
+  font-size: 0.8em;
+}
+
+div.footnotes hr {
+  max-width: 100px;
+  margin: 0;
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #333;
+}
