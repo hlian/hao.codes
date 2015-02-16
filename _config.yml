@@ -2,9 +2,9 @@
 title:
   Trello Computer Club
 baseurl:
-  "/computer-club/" # the subpath of your site, e.g. /blog/
+  "computer-club/"
 url:
-  "http://trello.github.io" # the base hostname & protocol for your site
+  "http://trello.github.io"
 twitter_username:
   trello
 github_username:
