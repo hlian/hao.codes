@@ -1,0 +1,20 @@
+# Site settings
+title:
+  Trello Computer Club
+baseurl:
+  "" # the subpath of your site, e.g. /blog/
+url:
+  "http://yourdomain.com" # the base hostname & protocol for your site
+twitter_username:
+  trello
+github_username:
+  trello
+highligher:
+  pygments
+safe:
+  true
+lsi:
+  false
+
+# Build settings
+markdown: kramdown
