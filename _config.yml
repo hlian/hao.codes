@@ -9,6 +9,10 @@ twitter_username:
   trello
 github_username:
   trello
+markdown:
+  redcarpet
+redcarpet:
+  extensions: ["smart", "tables", "strikethrough", "superscript", "footnotes"]
 highlighter:
   rouge
 safe:
@@ -17,6 +21,3 @@ lsi:
   false
 permalink:
   /:title
-
-# Build settings
-markdown: kramdown
