@@ -9,8 +9,11 @@ p, ul, ol, pre {
   margin: 1em 0;
 }
 
+ul, ol {
+  margin-left: 40px;
+}
+
 pre {
-  background: rgb(253, 246, 227);
   padding: 1em;
   margin: 0 -1em;
 }
