@@ -11,7 +11,7 @@ layout: default
 
         <h2>
           <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-          by <a href="{{ site.baseurl }}/people/{{ post.author }}/">{{ site.authors[post.author].name }}</a>
+          by <a href="{{ site.baseurl }}/people/{{ post.author }}/">{{ site.data.people[post.author].name }}</a>
         </h2>
       </li>
     {% endfor %}

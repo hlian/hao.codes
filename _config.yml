@@ -21,10 +21,3 @@ lsi:
   false
 permalink:
   /:title
-authors:
-  ian:
-    name: "Ian Henry"
-    site: "https://ianthehenry.com"
-  hao:
-    name: "Hao Lian"
-    site: "https://hao.codes"
