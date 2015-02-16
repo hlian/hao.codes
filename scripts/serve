@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+pushd src
+bundle exec jekyll serve --watch --drafts
+popd
