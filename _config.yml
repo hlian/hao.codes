@@ -14,7 +14,7 @@ markdown:
 redcarpet:
   extensions: ["smart", "tables", "strikethrough", "superscript", "footnotes"]
 highlighter:
-  rouge
+  pygments
 safe:
   true
 lsi:
