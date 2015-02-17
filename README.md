@@ -6,6 +6,10 @@ posts from anybody!
 
 ## FAQ
 
+**Ruby, what's the situation with Ruby?**
+
+You need a working Ruby installation. Everybody seems to like [rvm](https://rvm.io/). Hao gets along fine with just `brew install ruby`.
+
 **How can I contribute?**
 
 * `git clone git@github.com:trello/computer-club`
