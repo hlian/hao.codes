@@ -1,28 +1,33 @@
 ---
 layout: default
 ---
-<div>
-  <h1>Posts</h1>
-  <ul>
-    {% for post in site.posts %}
-      <li>
-        <span>{{ post.date | date: "%b %-d, %Y" }}</span>
 
-        <h2>
-          <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-          by <a href="{{ site.baseurl }}/people/{{ post.author }}/">{{ site.data.people[post.author].name }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
+<h1>Computer Club</h1>
 
-  <h1>People</h1>
-  <ul>
-    {% for author in site.data.people %}
-    <li><a href="{{ site.baseurl }}/people/{{ author[0] }}">{{ author[1].name }}</a></li>
-    {% endfor %}
-  </ul>
+<p>
+  <img src="{{ "/static/whisk.png" | prepend: site.baseurl}}" height="32px" width="32px" alt="whisk">
+</p>
 
-  <h2>RSS</h2>
-  <p><a href="{{ "/feed.xml" | prepend: site.baseurl }}">Subscribe via RSS</a>. (Atom is better, we know.)</p>
-</div>
+<h2>Posts</h2>
+<ul>
+{% for post in site.posts %}
+  <li>
+    <p><span>{{ post.date | date: "%b %-d, %Y" }}</span></p>
+
+    <p>
+      <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+      by <a href="{{ site.baseurl }}/people/{{ post.author }}/">{{ site.data.people[post.author].name }}</a>
+    </p>
+  </li>
+{% endfor %}
+</ul>
+
+<h2>People</h2>
+<ul>
+{% for author in site.data.people %}
+<li><a href="{{ site.baseurl }}/people/{{ author[0] }}">{{ author[1].name }}</a></li>
+{% endfor %}
+</ul>
+
+<h2>RSS</h2>
+<p><a href="{{ "/feed.xml" | prepend: site.baseurl }}">Subscribe via RSS</a>. (Atom is better, we know.)</p>
