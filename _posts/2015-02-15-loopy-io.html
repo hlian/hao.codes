@@ -205,7 +205,7 @@ to standard out.</p>
 
 <span class="c1">-- I mean, why not?</span>
 <span class="nf">integerOf</span> <span class="ow">::</span> <span class="kt">Bytes</span> <span class="ow">-&gt;</span> <span class="kt">Int</span>
-<span class="nf">integerOf</span> <span class="n">bytes</span> <span class="ow">=</span> <span class="kr">case</span> <span class="p">(</span><span class="n">reverse</span> <span class="o">.</span> <span class="n">utf8Decode</span> <span class="n">bytes</span><span class="p">)</span> <span class="kr">of</span>
+<span class="nf">integerOf</span> <span class="n">bytes</span> <span class="ow">=</span> <span class="kr">case</span> <span class="p">(</span><span class="n">reverse</span> <span class="o">$</span> <span class="n">utf8Decode</span> <span class="n">bytes</span><span class="p">)</span> <span class="kr">of</span>
   <span class="o">|</span> <span class="s">"0"</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
   <span class="o">|</span> <span class="s">"1"</span> <span class="ow">-&gt;</span> <span class="mi">1</span>
   <span class="o">|</span> <span class="s">"2"</span> <span class="ow">-&gt;</span> <span class="mi">2</span>
