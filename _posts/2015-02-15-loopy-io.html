@@ -9,10 +9,11 @@ author: hao
 <p>Dilemma: you are a lazy, pure, typed functional language and you want
 to be able to read standard input.</p>
 
-<p>In an impure language, like C, this isn’t a big deal. Those languages
-have a <code>read</code> that look like</p>
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="c1">// Reads up to newline from standard input, and returns it as a string.</span>
-<span class="c1">// (You'll have to free the string manually, I guess.)</span>
+<p>In an impure language like C this isn’t a big deal. Those languages
+have a <code>read</code> that look mighty like</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="c1">// Reads up to newline from standard input, and returns</span>
+<span class="c1">// it as an array of bytes.</span>
+<span class="c1">// (You'll have to free the pointer, I guess.)</span>
 <span class="kt">char</span> <span class="o">*</span><span class="nf">read</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// ...</span>
 <span class="p">}</span>
@@ -20,32 +21,32 @@ have a <code>read</code> that look like</p>
 <p><code>(void)</code> is our way of telling the compiler that <code>read</code> takes no
 arguments. Which means <code>read</code> starts with nothing!</p>
 
-<p>Nothing but the C environment, that is, which includes all sorts of
-useful things: global variables, system calls, <code>malloc(3)</code>, <code>free(3)</code>,
-<code>rand(3)</code>, all of libc, and so on.</p>
+<p>Nothing but the C environment, that is, which just so happens to include all sorts of
+useful things. Things like global variables, system calls, <code>malloc(3)</code>, <code>free(3)</code>,
+<code>rand(3)</code>, and all of libc. All the things you need to
+implement <code>read(3)</code>.</p>
 
 <p>In you — a pure language — a function that takes no arguments
-starts with <em>nothing</em>. And this time we mean actually nothing. A pure
-language cannot, by definition, create side effects. Off limits are
-global variables and system calls and all of libc.</p>
-
-<p>You probably find this highly restrictive. But purity is not simply a
-tax: it gives us equational reasoning, and a faster compiler, and
-stronger types.</p>
-
-<p>So, anyway, whatever: unless we are more clever, there is only one way
-to implement <code>read</code> with this type:</p>
-<div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="c1">-- Reads up to newilne from standard input, and returns it as a string.</span>
+starts with <em>nothing</em>. And this time we mean actually nothing.
+A pure language cannot by definition create side effects. (You
+probably find this highly restrictive. But purity is not simply a tax;
+it gives us equational reasoning, and a faster compiler, and stronger
+types.) So anyway whatever unless we are more clever, there is only
+one way to implement <code>read</code> with this type:</p>
+<div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="c1">-- Reads up to newline from standard input, yada yada.</span>
 <span class="nf">read</span> <span class="ow">::</span> <span class="kt">Bytes</span>
 <span class="nf">read</span> <span class="ow">=</span> <span class="n">utf8Encode</span> <span class="s">"hello, world"</span>
 </code></pre></div>
-<p>(I am assuming some familiarity with ML/Haskell-like syntax here. I am
-often uncertain of the amount of explaining that goes into a good
-post. Every dispatch from the frontier seems to require two other
-dispatches.)</p>
 
-<p>We can vary the string, but it always has to be a constant. And so we
-abandon the idea of pure I/O.…</p>
+<p>We can vary the string, but it always has to be a constant.</p>
+
+<p>[Brief authorial interjection] I am assuming some familiarity with
+ML/Haskell-like syntax here. I am often uncertain of the amount of
+explaining that goes into a good post. Every dispatch from the
+frontier seems to require two other dispatches. Just stick with me
+here. I’ll write up a how-to-read-Haskell post later.</p>
+
+<p>And so we abandon the idea of pure I/O.…</p>
 
 <p>… or we can be more clever.</p>
 
@@ -55,12 +56,14 @@ abandon the idea of pure I/O.…</p>
 that word, in <code>read</code> and also every other function, and we ascribed
 this handcuff to purity. This is not quite true.</p>
 
-<p>There is exactly <em>one</em> place where you do have an environment. In C,
-it is <em>everywhere</em>: you can call <code>malloc(3)</code> from anywhere and the C
-runtime knows exactly what you mean. But, for you, you only have
-<em>one</em>.</p>
+<p>There is exactly <em>one</em> place where you do have an
+environment. In C, it is <em>everywhere</em>. You can
+call <code>malloc(3)</code> from anywhere or you can run a shell with
+<code>rm -rf *</code> from anywhere, and the C runtime knows exactly
+what you mean.</p>
 
-<p>And that place is your <code>main</code> function.</p>
+<p>But you only have <em>one</em>, and it is the <code>main</code>
+function.</p>
 
 <p>In C we are used to <code>main</code> functions that are very dumb.</p>
 <div class="highlight"><pre><code class="language-c" data-lang="c"><span class="c1">// Please return an exit code.</span>
@@ -84,9 +87,9 @@ adventure onward and explore more interesting types.</p>
 <span class="nf">main</span> <span class="ow">::</span> <span class="kt">Request</span>
 <span class="nf">main</span> <span class="ow">=</span> <span class="kt">ReadStdIn</span>
 </code></pre></div>
-<p>Cute, and pure. But you’ll notice immediately a big problem: <code>main</code>
+<p>Cute, and pure. But you’ll notice immediately a big problem. <code>main</code>
 can ask questions, but it can never hear answers. You might at this
-point try:</p>
+point try</p>
 <div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="nf">submitRequest</span> <span class="ow">::</span> <span class="kt">Request</span> <span class="ow">-&gt;</span> <span class="kt">Bytes</span>
 <span class="nf">submitRequest</span> <span class="ow">=</span> <span class="n">undefined</span>
 
@@ -122,7 +125,7 @@ it seems impossible to read from stdin more than once. (After all, how
 would you distinguish between different reads?)</p>
 
 <p>As a computer scientist, you solve problems by either caching,
-counting, or naming. In this case, counting seems best:</p>
+counting, or naming. In this case, counting seems best.</p>
 <div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Event</span> <span class="ow">=</span>
   <span class="o">|</span> <span class="kt">ProgramJustStarted</span>
   <span class="o">|</span> <span class="kt">ReadStdinComplete</span> <span class="kt">Int</span> <span class="kt">Bytes</span>
@@ -193,19 +196,21 @@ to standard out.</p>
 <div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Handle</span> <span class="ow">=</span>
   <span class="o">|</span> <span class="kt">StandardIn</span>
   <span class="o">|</span> <span class="kt">StandardOut</span>
-  <span class="o">|</span> <span class="kt">File</span> <span class="kt">FilePath</span> <span class="c1">-- this could work! but I'll elide the details</span>
+  <span class="o">|</span> <span class="kt">File Int</span> <span class="c1">-- !</span>
 
 <span class="kr">data</span> <span class="kt">Event</span> <span class="ow">=</span>
+  <span class="o">|</span> <span class="kt">OpenFileComplete</span> <span class="kt">Handle</span> <span class="c1">-- !</span>
   <span class="o">|</span> <span class="kt">ReadComplete</span> <span class="kt">Handle</span> <span class="kt">Bytes</span>
   <span class="o">|</span> <span class="kt">PrintComplete</span>
 
 <span class="kr">data</span> <span class="kt">Request</span> <span class="ow">=</span>
+  <span class="o">|</span> <span class="kt">OpenFile</span> <span class="kt">FilePath</span> <span class="c1">-- !</span>
   <span class="o">|</span> <span class="kt">Read</span> <span class="kt">Handle</span>
   <span class="o">|</span> <span class="kt">Print</span> <span class="kt">Handle</span> <span class="kt">Bytes</span>
 
 <span class="c1">-- I mean, why not?</span>
 <span class="nf">integerOf</span> <span class="ow">::</span> <span class="kt">Bytes</span> <span class="ow">-&gt;</span> <span class="kt">Int</span>
-<span class="nf">integerOf</span> <span class="n">bytes</span> <span class="ow">=</span> <span class="kr">case</span> <span class="p">(</span><span class="n">reverse</span> <span class="o">$</span> <span class="n">utf8Decode</span> <span class="n">bytes</span><span class="p">)</span> <span class="kr">of</span>
+<span class="nf">integerOf</span> <span class="n">bytes</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">utf8Decode</span> <span class="n">bytes</span> <span class="kr">of</span>
   <span class="o">|</span> <span class="s">"0"</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
   <span class="o">|</span> <span class="s">"1"</span> <span class="ow">-&gt;</span> <span class="mi">1</span>
   <span class="o">|</span> <span class="s">"2"</span> <span class="ow">-&gt;</span> <span class="mi">2</span>
@@ -232,7 +237,7 @@ to standard out.</p>
 </code></pre></div>
 <p>It may seem to you strange that we are able to define a list of requests whose values depend on the list of events whose values depend on said list of requests whose values depend on.…</p>
 
-<p>Why is that possible? And how is possible in such few lines of code?</p>
+<p>Why is that possible? And how is it possible in such few lines of code?</p>
 
 <p>Perhaps we should stop teaching C and Java as first languages.</p>
 
