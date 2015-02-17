@@ -1,3 +1,7 @@
+* {
+  box-sizing: content-box;
+}
+
 body {
   font-family: "Ubuntu Mono", "Consolas", monospace;
   font-size: 14pt;
@@ -22,7 +26,17 @@ li {
 a[rel="footnote"] {
   vertical-align: super;
   font-size: 0.7em;
-  padding-left: 2px;
+  display: inline-block;
+  position: relative;
+  top: 3px;
+  text-decoration: none;
+  background: lightblue;
+  padding: 0 2px;
+  color: black;
+}
+
+a[rel="footnote"]:hover {
+  background: cyan;
 }
 
 a[rev="footnote"] {
@@ -35,7 +49,7 @@ pre, code {
 }
 
 code {
-  padding: 5px;
+  padding: 5px 2px;
 }
 
 pre code {
@@ -44,4 +58,25 @@ pre code {
 
 div.footnotes {
   font-size: 0.8em;
+}
+
+i, em {
+  font-style: italic;
+}
+
+b, strong {
+  font-weight: bold;
+}
+
+p.intro + hr {
+  text-align: center;
+  border: 0;
+}
+
+p.intro + hr:after {
+  content: "^L";
+  color: #999;
+  display: block;
+  font-size: 0.8em;
+  margin: 2em 0;
 }
