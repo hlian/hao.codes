@@ -75,12 +75,12 @@ b, strong {
   font-weight: bold;
 }
 
-p.intro + hr {
+hr.page-break {
   text-align: center;
   border: 0;
 }
 
-p.intro + hr:after {
+hr.page-break:after {
   content: "^L";
   color: #999;
   display: block;
