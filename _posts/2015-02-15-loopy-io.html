@@ -135,9 +135,9 @@ counting, or naming. In this case, counting seems best.</p>
 <span class="nf">main</span> <span class="p">(</span><span class="kt">ReadStdinComplete</span> <span class="mi">0</span> <span class="n">bytes</span><span class="p">)</span> <span class="ow">=</span> <span class="kt">ReadStdin</span>
 <span class="nf">main</span> <span class="p">(</span><span class="kt">ReadStdinComplete</span> <span class="mi">1</span> <span class="n">bytes</span><span class="p">)</span> <span class="ow">=</span> <span class="kt">Exit</span> <span class="mi">0</span>
 </code></pre></div>
-<p>Ah, thinks the astute reader. She has implemented allowed me to read
-<code>bytes</code> and so I have two <code>bytes</code> variables but I could never use
-both.</p>
+<p>Ah, thinks the astute reader. She has allowed me to read
+<code>bytes</code>, and so I have two <code>bytes</code> variables, but I could never use
+both in the same expression.</p>
 
 <p>This problem is <em>very interesting</em>. The problem of sequencing and
 interleaving computation is something on which you could spend an
@@ -199,6 +199,7 @@ to standard out.</p>
   <span class="o">|</span> <span class="kt">File Int</span> <span class="c1">-- !</span>
 
 <span class="kr">data</span> <span class="kt">Event</span> <span class="ow">=</span>
+  <span class="o">|</span> <span class="kt">ProgramJustStarted</span>
   <span class="o">|</span> <span class="kt">OpenFileComplete</span> <span class="kt">Handle</span> <span class="c1">-- !</span>
   <span class="o">|</span> <span class="kt">ReadComplete</span> <span class="kt">Handle</span> <span class="kt">Bytes</span>
   <span class="o">|</span> <span class="kt">PrintComplete</span>
@@ -207,6 +208,7 @@ to standard out.</p>
   <span class="o">|</span> <span class="kt">OpenFile</span> <span class="kt">FilePath</span> <span class="c1">-- !</span>
   <span class="o">|</span> <span class="kt">Read</span> <span class="kt">Handle</span>
   <span class="o">|</span> <span class="kt">Print</span> <span class="kt">Handle</span> <span class="kt">Bytes</span>
+  <span class="o">|</span> <span class="kt">Exit</span> <span class="kt">Int</span>
 
 <span class="c1">-- I mean, why not?</span>
 <span class="nf">integerOf</span> <span class="ow">::</span> <span class="kt">Bytes</span> <span class="ow">-&gt;</span> <span class="kt">Int</span>
@@ -227,12 +229,13 @@ to standard out.</p>
 <span class="nf">show</span> <span class="ow">=</span> <span class="n">undefined</span> <span class="c1">-- same thing, but in reverse</span>
 
 <span class="nf">main</span> <span class="ow">::</span> <span class="p">[</span><span class="kt">Event</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Request</span><span class="p">]</span>
-<span class="nf">main</span> <span class="p">[</span> <span class="kt">YourProgramJustStarted</span>
+<span class="nf">main</span> <span class="p">[</span> <span class="kt">ProgramJustStarted</span>
      <span class="p">,</span> <span class="kt">ReadComplete</span> <span class="kt">StandardIn</span> <span class="n">a</span>
-     <span class="p">,</span> <span class="kt">ReadComplete</span> <span class="kt">Stdin</span> <span class="n">b</span><span class="p">]</span> <span class="ow">=</span>
+     <span class="p">,</span> <span class="kt">ReadComplete</span> <span class="kt">Standardin</span> <span class="n">b</span><span class="p">]</span> <span class="ow">=</span>
   <span class="p">[</span> <span class="kt">Read</span> <span class="kt">StandardIn</span>
   <span class="p">,</span> <span class="kt">Read</span> <span class="kt">StandardIn</span>
   <span class="p">,</span> <span class="p">(</span><span class="kt">Print</span> <span class="kt">StandardOut</span> <span class="o">.</span> <span class="n">show</span><span class="p">)</span> <span class="p">(</span><span class="n">integerOf</span> <span class="n">a</span> <span class="o">+</span> <span class="n">integerOf</span> <span class="n">b</span><span class="p">)</span>
+  <span class="p">,</span> <span class="kt">Exit</span> <span class="mi">0</span>
   <span class="p">]</span>
 </code></pre></div>
 <p>It may seem to you strange that we are able to define a list of requests whose values depend on the list of events whose values depend on said list of requests whose values depend on.…</p>
@@ -241,8 +244,7 @@ to standard out.</p>
 
 <p>Perhaps we should stop teaching C and Java as first languages.</p>
 
-<p>In any case, this is as good a stopping point as any. Next time let’s
-talk about continuations and, after that, monads.</p>
+<p>Next time let’s talk about continuations and, after that, monads.</p>
 
 <div class="footnotes">
 <hr>
