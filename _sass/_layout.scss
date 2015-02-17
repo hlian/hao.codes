@@ -10,16 +10,16 @@ p, ul, ol, pre {
 }
 
 ul, ol {
-  margin-left: 40px;
+  margin-left: 1em;
 }
 
 pre {
-  padding: 1em;
-  margin: 0 -1em;
+  padding: 1em 10px;
+  margin: 0 -10px;
 }
 
 pre.big {
-  margin: 0 -2em;
+  margin: 0 -20px;
 }
 
 div.footnotes {
@@ -34,4 +34,12 @@ div.footnotes hr {
   height: 1px;
   border: 0;
   border-top: 1px solid #333;
+}
+
+@media (max-device-width: 800px) {
+  body {
+    /* Justification: at this point we're so small we can just take a
+       percentage and get a good-enough look, with very little code. */
+    max-width: 90%;
+  }
 }

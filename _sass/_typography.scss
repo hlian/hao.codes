@@ -7,6 +7,13 @@ body {
   font-size: 14pt;
 }
 
+@media (max-device-width: 800px) {
+  body {
+    /* Justification: your face is closer to the device? */
+    font-size: 10pt;
+  }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
