@@ -5,10 +5,6 @@ baseurl:
   "/computer-club"
 url:
   "http://trello.github.io"
-twitter_username:
-  trello
-github_username:
-  trello
 markdown:
   redcarpet
 redcarpet:
@@ -21,3 +17,5 @@ lsi:
   false
 permalink:
   /:title
+description:
+  "over the last zero years we've written almost a handful of articles on this site about software development, management, business, and the Internet"
