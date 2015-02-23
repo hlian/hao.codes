@@ -1,10 +1,7 @@
-# Site settings
 title:
   Computer Club
-baseurl:
-  "/computer-club"
 url:
-  "http://trello.github.io"
+  "http://hao.codes"
 markdown:
   redcarpet
 redcarpet:
@@ -18,4 +15,4 @@ lsi:
 permalink:
   /:title
 description:
-  "over the last zero years we've written almost a handful of articles on this site about software development, management, business, and the Internet"
+  "over the last zero years Hao Lian has written almost a handful of articles on this site about software development, management, business, and the Internet"
