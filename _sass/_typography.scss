@@ -3,13 +3,26 @@
 }
 
 body {
+  font-family: neuton, serif;
+  font-size: 18pt;
+  line-height: 1.25;
+}
+
+pre, code {
   font-family: "Ubuntu Mono", "Menlo", "Consolas", monospace;
+}
+
+code {
   font-size: 14pt;
-  line-height: 1.2;
+}
+
+pre {
+  font-size: 14pt;
+  overflow-x: scroll;
 }
 
 @media (max-device-width: 800px) {
-  body {
+  body, pre {
     /* Justification: your face is closer to the device? */
     font-size: 10pt;
   }
@@ -49,6 +62,11 @@ a[rel="footnote"] {
 
 a[rel="footnote"]:hover {
   background: cyan;
+}
+
+a[rev="footnote"] {
+  font-size: 0.6em;
+  margin-left: 3px;
 }
 
 pre, code {
