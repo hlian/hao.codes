@@ -1,5 +1,5 @@
 title:
-  Computer Club
+  Spoke Proof
 url:
   "http://hao.codes"
 markdown:
@@ -15,4 +15,4 @@ lsi:
 permalink:
   /:title
 description:
-  "over the last zero years Hao Lian has written almost a handful of articles on this site about software development, management, business, and the Internet"
+  "Spoke Proof: Haskell, lenses, C, and everything else"
