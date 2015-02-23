@@ -13,6 +13,6 @@ safe:
 lsi:
   false
 permalink:
-  /:title
+  /:title.html
 description:
   "Spoke Proof: Haskell, lenses, C, and everything else"
