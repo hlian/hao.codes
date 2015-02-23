@@ -105,3 +105,21 @@ hr.page-break:after {
   font-size: 0.8em;
   margin: 2em 0;
 }
+
+sup {
+  vertical-align: super;
+  font-size: 14pt;
+  position: relative;
+  top: 4px;
+}
+
+blockquote {
+  border-left: 2px solid darkred;
+  border-right: 2px solid darkred;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+blockquote cite::before {
+  content: "~~~";
+}
