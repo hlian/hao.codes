@@ -2,10 +2,17 @@
 layout: default
 ---
 
+<p>
+  <img src="{{ "/static/whisk.png" | prepend: site.baseurl}}" height="32px" width="32px" alt="whisk">
+</p>
+
 <h1>{{ site.title }}</h1>
 
 <p>
-  <img src="{{ "/static/whisk.png" | prepend: site.baseurl}}" height="32px" width="32px" alt="whisk">
+  by
+  {% for author in site.data.people %}
+  <a href="{{ site.baseurl }}/people/{{ author[0] }}">{{ author[1].name }}</a>
+  {% endfor %}
 </p>
 
 <h2>Posts</h2>
@@ -21,12 +28,6 @@ layout: default
 {% endfor %}
 </ul>
 
-<h2>People</h2>
-<ul>
-{% for author in site.data.people %}
-<li><a href="{{ site.baseurl }}/people/{{ author[0] }}">{{ author[1].name }}</a></li>
-{% endfor %}
-</ul>
 
 <h2>RSS</h2>
 <p><a href="{{ "/feed.xml" | prepend: site.baseurl }}">Subscribe via RSS</a>. (Atom is better, we know.)</p>
