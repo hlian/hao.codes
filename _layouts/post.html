@@ -1,7 +1,6 @@
 ---
 layout: default
 ---
-{% assign author = site.data.people[page.author] %}
 
 <p>
   The following post is part of <em><a href="{{ '/' | prepend: site.baseurl}}">{{ site.title }}</a></em>.
@@ -14,7 +13,7 @@ layout: default
 
   <header class="post-header">
     <h1 class="post-title">{{ page.title }}</h1>
-    <p class="post-meta">{{ page.date | date: "%b %-d, %Y" }} by <a href="{{ site.baseurl }}/people/{{ page.author }}/">{{ author.name }}</a>{% if page.meta %} • {{ page.meta }}{% endif %}</p>
+    <p class="post-meta">{{ page.date | date: "%Y %b %d" }}</p>
   </header>
 
   <article class="post-content">
