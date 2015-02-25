@@ -79,7 +79,7 @@ to me, I think I lack the intuition / heart-of-the-cards required to
 glean true wisdom from it.
 
 For example: while I understand that Hask<sup>op</sup> is the
-[dual][d] of D, I have a hard time reconciling the two definitions.
+[dual][d] of D, I have a hard time reconciling the two definitions.[^messy]
 
 * Definition (1) says a profunctor is the functor Hask<sup>op</sup> × Hask → Hask
 
@@ -89,17 +89,10 @@ For example: while I understand that Hask<sup>op</sup> is the
     class Profunctor p where
       -- law: dimap (f . g) (h . i) ≡ dimap g h . dimap f i
       dimap :: (a -> b) -> (c -> d) -> p b c -> p a d
-    ```
+      ```
 
-([Messy authorial thought process here] Hask is the category where
-objects are Haskell types and the morphism from object _A_ to object
-_B_ is _A_ → _B_. And Hask<sup>op</sup> × Hask is also a category. `p`
-must be the functor from Hask<sup>op</sup> × Hask to Hask
-[laws and all] and ... so `p b c` and `p a d` must be the
-"destination" of that functor? The laws for `p` must imply and is
-implied by the law for `dimap` in that typeclass? I have a shaky
-knowledge of those laws and I don't know duals
-[Hask<sup>op</sup> is the "dual" of Hask].)
+[^messy]: Messy authorial thought process here: Hask is the category where objects are Haskell types and the morphism from object _A_ to object _B_ is _A_ → _B_. And Hask<sup>op</sup> × Hask is also a category. `p` must be the functor from Hask<sup>op</sup> × Hask to Hask [laws and all] and ... so `p b c` and `p a d` must be the "destination" of that functor? The laws for `p` must imply and is implied by the law for `dimap` in that typeclass? I have a shaky knowledge of those laws and I don't know duals. ([Hask<sup>op</sup> is the "dual" of Hask.)
+
 
 [sigfpe]: http://blog.sigfpe.com/2011/07/profunctors-in-haskell.html
 [d]: http://en.wikipedia.org/wiki/Dual_%28category_theory%29

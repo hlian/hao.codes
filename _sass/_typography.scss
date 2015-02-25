@@ -107,10 +107,12 @@ hr.page-break:after {
 }
 
 sup {
-  vertical-align: super;
-  font-size: 14pt;
+  vertical-align: top;
+  font-size: 0.8rem;
   position: relative;
-  top: 4px;
+  top: -0.1em;
+  margin-top: -100px;
+  margin-left: 1px;
 }
 
 blockquote {
