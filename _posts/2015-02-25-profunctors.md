@@ -99,7 +99,7 @@ of "profunctor," one based in category and one based in Haskell code.
 (The law is important, so let's restate it here: `dimap` distributes
 over function composition, where `f . g` splits into `g` and `f`
 whereas `h . i` splits into `h` and `i` (the other order). Presumably
-the functor laws combined with the first definition yields the
+the functor laws combined with the first definition yield the
 law.[^messy])
 
 The reconciliation is opaque to me.
