@@ -111,7 +111,7 @@ draw out this little painting instead.
 ## A portrait of a profunctor as a young artist
 
 A type constructor `p` with kind `* -> * -> *` is a profunctor iff
-whenever you have a function `a -> b` and a function `c -> d` and& a
+whenever you have a function `a -> b` and a function `c -> d` and a
 value `p b c` as depicted here
 
 ```
