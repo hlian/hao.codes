@@ -100,7 +100,7 @@ of "profunctor," one based in category and one based in Haskell code.
 over function composition, where `f . g` splits into `g` and `f`
 whereas `h . i` splits into `h` and `i` (the other order). Presumably
 the functor laws combined with the first definition yields that type
-fsignature?[^messy])
+signature?[^messy])
 
 The reconciliation is opaque to me.
 
