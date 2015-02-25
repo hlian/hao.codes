@@ -79,7 +79,7 @@ to me, I think I lack the intuition / heart-of-the-cards required to
 glean true wisdom from it.
 
 For example: while I understand that Hask<sup>op</sup> is the
-[dual][d] of D, I have a hard time reconciling the two definitions.
+[dual][d] of Hask, I have a hard time reconciling the two definitions.
 
 * Definition (1) says a profunctor is the functor Hask<sup>op</sup> × Hask → Hask
 
@@ -222,7 +222,7 @@ a -------> b
 c -------> d
 ```
 
-Note that I've again substituted the profunctor out since I know that `Kleisli m b c` is equal to `b -> m c`.
+Note that I've again substituted the profunctor out since I know that `Kleisli m b c` is equal to `b -> m c`; the straight diagonal arrow means `b -> m c`.
 
 The question is: can we find a value of type `a -> m d` and therefore complete the diagram?
 
@@ -235,6 +235,8 @@ a -------> b
   /      \
 c -------> d
 ```
+
+The two straight diagonal arrows mean `b -> m c` and `a -> m d`.
 
 We have `ab :: a -> b` and `cd :: c -> d` and `bmc :: b -> m c` and
 `a`, and we need to find a value `m d`. Again we can almost
