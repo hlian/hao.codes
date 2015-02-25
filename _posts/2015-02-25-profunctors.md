@@ -83,7 +83,10 @@ Haskell values and Hask<sup>op</sup> is notation for the [dual][d] of
 Hask, with that information I still have to reconcile two definitions
 of "profunctor," one based in category and one based in Haskell code.
 
-* Definition (1) says a profunctor is the functor Hask<sup>op</sup> × Hask → Hask
+* Definition (1) says a profunctor is the functor Hask<sup>op</sup> ×
+  Hask → Hask, with all the corollaries that claim implies. We could
+  spend a lot of time unpacking this definition, but just go read the
+  sigfpe's blog post.
 
 * Definition (2) says a profunctor is
 
