@@ -32,9 +32,9 @@ I see that `Prism'` is aliased to `Prism`, with `s = t` and `a = b`.
   `type Lens' s a = Lens s s a a` is simple: the type variables stay
   constant during a setting operation.
 
-This checks out. `"5" & _Number .~ 10 -- "10"` should neither
-return a non-`Text` value, nor should it twiddle with the
-`Scientific` nature of the old number `5`.
+This checks out. `"5" & _Number .~ 10` (which evalutes to `"10" ::
+Text`) should neither return a non-`Text` value, nor should it twiddle
+with the `Scientific` nature of the old number `5`.
 
 _I click over to `Prism`, the fully generalized prism type._
 
