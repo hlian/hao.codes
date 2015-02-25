@@ -54,8 +54,8 @@ _I click over to `Choice`._
 
 [0]: http://hackage.haskell.org/package/lens
 [1]: https://hackage.haskell.org/package/lens-aeson-1.0.0.3/docs/Data-Aeson-Lens.html
-[2]: chart
-[3]: jazzing
+[2]: http://i.imgur.com/4fHw3Fd.png
+[3]: {% post_url 2015-02-22-lenses-heart-json %}
 [choice]: http://hackage.haskell.org/package/lens-4.7/docs/Control-Lens-Prism.html#t:Choice
 
 ## What are profunctors?
