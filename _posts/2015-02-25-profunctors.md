@@ -79,7 +79,7 @@ to me, I think I lack the intuition / heart-of-the-cards required to
 glean true wisdom from it.
 
 For example: while I understand that Hask<sup>op</sup> is the
-[dual][d] of D, I have a hard time reconciling the two definitions.[^messy]
+[dual][d] of D, I have a hard time reconciling the two definitions.
 
 * Definition (1) says a profunctor is the functor Hask<sup>op</sup> × Hask → Hask
 
@@ -91,21 +91,29 @@ For example: while I understand that Hask<sup>op</sup> is the
       dimap :: (a -> b) -> (c -> d) -> p b c -> p a d
       ```
 
+The law is important, so let's restate it here: `dimap` distributes
+over function composition, where `f . g` splits into `g` and `f`
+whereas `h . i` splits into `h` and `i` (the other order). Presumably
+the functor laws combined with the first definition yields that type
+signature?[^messy] It is opaque to me at the moment, though
+
 [^messy]: Messy authorial thought process here: Hask is the category where objects are Haskell types and the morphism from object _A_ to object _B_ is _A_ → _B_. And Hask<sup>op</sup> × Hask is also a category. `p` must be the functor from Hask<sup>op</sup> × Hask to Hask [laws and all] and ... so `p b c` and `p a d` must be the "destination" of that functor? The laws for `p` must imply and is implied by the law for `dimap` in that typeclass? I have a shaky knowledge of those laws and I don't know duals. ([Hask<sup>op</sup> is the "dual" of Hask.)
 
 
 [sigfpe]: http://blog.sigfpe.com/2011/07/profunctors-in-haskell.html
 [d]: http://en.wikipedia.org/wiki/Dual_%28category_theory%29
 
-However, I think I have stumbled upon an interesting insight: you can
-understand profunctors without understanding category theory. You can
-draw out this little painting instead.
+However, I think I have stumbled upon a metaphorical conceit that you
+can use to understand profunctors without understanding category
+theory. You can draw out this little painting instead.
 
 ## A portrait of a profunctor as a young artist
 
-A type constructor `p` with kind `* -> * -> *` is a profunctor iff
-whenever you have a function `a -> b` and a function `c -> d` and a
-value `p b c` as depicted here
+Promise: no category theory, no duals, no mention of functors.
+
+Say you have a type constructor `p` with kind `* -> * -> *` and a
+function `a -> b` and a function `c -> d` and a value `p b c` as
+depicted here.
 
 ```
 a -------> b
@@ -117,11 +125,10 @@ a -------> b
 c -------> d
 ```
 
-(where the straight arrows mean "function arrow" and the curly tildes
-mean "related by profunctor `p`")
-
-there exists a value `p a d`. That is, I'm able to complete the
-diagram with another curly arrow:
+Legend: the straight arrows mean "function arrow" and the curly tildes
+mean <code>b &#96;p&#96; c</code>. Then `p` is a profunctor iff there
+exists a value `p a d` or, equivalently, <code>a &#96;p&#96; d</code>.
+That is, I'm able to complete the diagram with another curly arrow:
 
 ```
 a -------> b
@@ -151,14 +158,15 @@ a -------> b
 c -------> d
 ```
 
-The question is: can we find a value of type `(->) a d`.
+The question is: can we find a value of type `(->) a d`?
 
 I've drawn the diagram very suggestively. Where the curly arrow is
 supposed to be, I've drawn a straight arrow. That's because `(-> b c)`
 is equivalent to `b -> c`. A trite observation perhaps, but this was a
-minor epiphany for me when I realized I could simply substitute a
-straight arrow for a profunctor most of the time and get the "meaning"
-of the type I was looking at.
+minor epiphany for me. Whenever you see `Profunctor p =>` in a type
+signature, substitute in `(->)` for `p` and see if the type then makes
+sense to you. `(->)` is the most intuitive instance of `Profunctor`,
+so it serves as a sanity check for the confused reader.
 
 So the new question is: can we find a value of type `a -> d`?
 
