@@ -191,8 +191,13 @@ Let's write the proof out in Haskell.
 instance Profunctor (->) where
   dimap ab cd bc = cd . bc . ab
 ```
+
 See
 [Data.Profunctor](https://hackage.haskell.org/package/profunctors-3.1.1/docs/src/Data-Profunctor.html).
+Note that the variables are written to reflect the two ends of the
+function arrow; that should help as otherwise the type inferencer is
+the only person who knows what is going on here. I will try to follow
+that convention below too.
 
 
 ## A slightly-harder-to-understand profunctor
