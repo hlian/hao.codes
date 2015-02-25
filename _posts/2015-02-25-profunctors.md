@@ -78,8 +78,10 @@ analogy of relations:functions :: profunctors:functors is interesting
 to me, I think I lack the intuition / heart-of-the-cards required to
 glean true wisdom from it.
 
-For example: while I understand that Hask<sup>op</sup> is the
-[dual][d] of Hask, I have a hard time reconciling the two definitions.
+For example: Even though that I sort of know Hask is a category of all
+Haskell values and Hask<sup>op</sup> is notation for the [dual][d] of
+Hask, with that information I still have to reconcile two definitions
+of "profunctor," one based in category and one based in Haskell code.
 
 * Definition (1) says a profunctor is the functor Hask<sup>op</sup> × Hask → Hask
 
@@ -91,11 +93,13 @@ For example: while I understand that Hask<sup>op</sup> is the
       dimap :: (a -> b) -> (c -> d) -> p b c -> p a d
       ```
 
-The law is important, so let's restate it here: `dimap` distributes
+(The law is important, so let's restate it here: `dimap` distributes
 over function composition, where `f . g` splits into `g` and `f`
 whereas `h . i` splits into `h` and `i` (the other order). Presumably
 the functor laws combined with the first definition yields that type
-signature?[^messy] It is opaque to me at the moment, though
+fsignature?[^messy])
+
+The reconciliation is opaque to me.
 
 [^messy]: Messy authorial thought process here: Hask is the category where objects are Haskell types and the morphism from object _A_ to object _B_ is _A_ → _B_. And Hask<sup>op</sup> × Hask is also a category. `p` must be the functor from Hask<sup>op</sup> × Hask to Hask [laws and all] and ... so `p b c` and `p a d` must be the "destination" of that functor? The laws for `p` must imply and is implied by the law for `dimap` in that typeclass? I have a shaky knowledge of those laws and I don't know duals. ([Hask<sup>op</sup> is the "dual" of Hask.)
 
