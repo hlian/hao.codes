@@ -206,6 +206,31 @@ function arrow; that should help as otherwise the type inferencer is
 the only person who knows what is going on here. I will try to follow
 that convention below too.
 
+It remains to show that `dimap (f . g) (h . i) ≡ dimap g h . dimap f i` for this instance of `dimap`. It does!
+
+First choose `a, b, c, d, e, f` so that `f :: b -> c` and `g :: a -> b` and `h :: e -> f` and `i :: d -> e`.
+
+Now fix `p :: (->) c d`. We want to show that `dimap (f . g) (h . i) $ p` produces the same value as `dimap g h . dimap f i $ p`.
+
+What is `dimap (f . g) (h . i) $ p`? Well, it must be the arrow crossing `p :: c -> d` here:
+
+```
+   (g)      (f)
+a -----> b -----> c
+  \             /
+    \         / (p)
+      \     /
+        \ /
+        / \
+      /     \
+    /         \
+  /             \
+d -----> e -----> f
+   (i)      (h)
+```
+
+In other words, some value `q :: a -> f`.
+
 
 ## A slightly-harder-to-understand profunctor
 
@@ -270,6 +295,8 @@ instance Monad m =>  Profunctor (Kleisli m) where
   dimap ab cd (Kleisli bmc) = Kleisli (cmd . bmc . ab)
                               where cmd = liftM cd
 ```
+
+Again it remains to show that `dimap (f . g) (h . i) ≡ dimap g h . dimap f i` for this instance of `dimap`. (It does!)
 
 ## Examples of profunctors in lenses
 
