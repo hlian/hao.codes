@@ -14,9 +14,11 @@ layout: default
     <h2>Posts</h2>
     <ul>
     {% for post in site.posts %}
+      {% unless post.title contains 'poopmonster' %}
       {% if post.author == page.author %}
         <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></li>
       {% endif %}
+      {% endunless %}
     {% endfor %}
     </ul>
   </article>

@@ -2,10 +2,14 @@
   box-sizing: content-box;
 }
 
-body {
+html {
   font-family: neuton, serif;
-  font-size: 18pt;
-  line-height: 1.25;
+  font-size: 16pt;
+  background: #fcfbfc;
+}
+
+body {
+  line-height: 1.35;
 }
 
 pre, code {
@@ -13,12 +17,11 @@ pre, code {
 }
 
 code {
-  font-size: 14pt;
+  font-size: 12pt;
 }
 
 pre {
   font-size: 14pt;
-  overflow-x: scroll;
 }
 
 @media (max-device-width: 800px) {
@@ -32,20 +35,12 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
 
-h2, h3, h4, h5, h6 {
-  margin-top: 2em;
-}
-
 ul {
   list-style-type: disc;
 }
 
 ol {
   list-style-type: decimal;
-}
-
-li {
-  margin: 1em 0;
 }
 
 a[rel="footnote"] {

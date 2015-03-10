@@ -1,20 +1,30 @@
 body {
   padding: 1em 0;
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 p, ul, ol, pre {
-  margin: 1em 0;
+  margin: 1rem 0;
 }
 
 ul, ol {
   margin-left: 1em;
 }
 
+h2, h3, h4, h5, h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+li {
+  margin: 0.5em 0;
+}
+
 pre {
   padding: 1em 10px;
   margin: 0 -10px;
+  overflow-x: auto;
 }
 
 pre.big {
@@ -40,5 +50,12 @@ div.footnotes hr {
     /* Justification: at this point we're so small we can just take a
        percentage and get a good-enough look, with very little code. */
     max-width: 90%;
+  }
+}
+
+@media (min-device-width: 800px) {
+  .expand {
+    margin-left: -150px;
+    margin-right: -150px;
   }
 }
