@@ -4,53 +4,50 @@ title: "What are profunctors? poopmonster"
 author: hao
 ---
 
-## JSON
+## Where profunctors come from
 
-I get curious about the lenses I'm using. When I write `"5" ^?
-   _Number` while [jazzing around JSON][3], I wonder how `_Number` is
-   implemented in [lens-aeson][1].
+Q: if a newcomer to lenses asks you, **how do lenses work?**, what do
+you say?
 
-<em>I Hoogle/Hayoo over to `_Number`.</em>
+You can take her through the derivation of van Laarhoven's lenses, and
+she will walk away with puzzled but bright eyes. The material is
+dense, but ultimately resolves into a handful of typeclassing tricks.
+But how about more complicated lenses? How about _prisms_?
 
-## Numbers
+Take `"5" ^? _Number` for example, which one might write
+while [jazzing around JSON][3]. `_Number`, exported by
+[lens-aeson][1], is a prism.
 
-I see `_Number :: Prism' t Scientific` and note that `t` is a type
-  variable constrained by `AsNumber t`. The instances of `AsNumber`
-  are mostly strings and bytes, so I gently substitute `Text` for `t`.
+The first stop is the Hackage entry for lens-aeson, which informs me
+that `_Number :: Prism' Text Scientific`.
 
-`_Number :: Prism' Text Scientific` makes sense to me because the
-value `"5" ^? _Number` must be the `Scientific` (the Part) read out
-from `"5"`'s data type `Text` (the Whole). `Prism'` must be
-parametrized over the whole and the part, like `Lens'`.
+(Can we take a moment to appreciate Hackage? A community-driven
+documentation bonanza containing every Haskell package, with links to
+source code and _cross-references between typeclasses and instances_.)
 
-_I click over to `Prism'`._
+Why the prime mark `'`? Well,
 
-## Prism-prime's
+```haskell
+type Prism' part whole = Prism part part whole whole
+```
 
-I see that `Prism'` is aliased to `Prism`, with `s = t` and `a = b`.
-  I deduce that the prism `_Number` is simple, in the same way that
-  `type Lens' s a = Lens s s a a` is simple: the type variables stay
-  constant during a setting operation.
+OK, so what is `Prism`? According to Hackage,
 
-This checks out. `"5" & _Number .~ 10` (which evalutes to `"10" ::
-Text`) should neither return a non-`Text` value, nor should it twiddle
-with the `Scientific` nature of the old number `5`.
+```haskell
+type Prism s t a b = forall p f. (Choice p, Applicative f) =>
+    p a (f b) -> p s (f t)
+```
 
-_I click over to `Prism`, the fully generalized prism type._
+So this became abstract very quickly. For a long time in using lenses,
+profunctors were this big wall
 
-## Prisms
+The constraint `Applicative f` tells me that every prism is a
+traversal, as per the [big scary chart from the lens package][2], so
+at least that part I grok. But what is `Choice p`?
 
-I see that `Prism` is `type Prism s t a b = forall p f. (Choice p,
-  Applicative f) => p a (f b) -> p s (f t)`. The quantified `f` tells
-  me that every prism is a traversal, which is something I've read and
-  is also [charted front-and-center][2] in the documentation. But what is `p`?
-
-_I click over to `Choice`._
-
-## Choices
-
-[Choice is defined as a subclass of `Profunctor`][choice]. And so
-  I'm stuck, and I'm stuck on this seemingly simple question:
+And here we have our first run-in with profunctors. For you see,
+[Choice is defined as a subclass of `Profunctor`][choice], which leads
+us to a deceptively simple question:
 
 [0]: http://hackage.haskell.org/package/lens
 [1]: https://hackage.haskell.org/package/lens-aeson-1.0.0.3/docs/Data-Aeson-Lens.html
@@ -73,28 +70,53 @@ but it requires a little knowledge of category theory. The crux is:
 > written as a function f:A×B→{0,1} where we say xfy iff f(x,y)=1. In
 > this case, profunctors map to Set rather than {0,1}.&nbsp;&nbsp;<cite>Dan Piponi</cite>
 
-I know a little set theory but zero category theory, so while the SAT
-analogy of relations:functions :: profunctors:functors is interesting
-to me, I think I lack the intuition / heart-of-the-cards required to
-glean true wisdom from it.
+The blog post sets up the neat little SAT analogy of
+relations:functions :: profunctors:functors. I have read it many
+times, but as I do not know much about category theory's functors I
+must walk away, wishing that I had the intuition / heart-of-the-cards
+for the material.
 
-For example: Even though that I sort of know Hask is a category of all
-Haskell values and Hask<sup>op</sup> is notation for the [dual][d] of
-Hask, with that information I still have to reconcile two definitions
-of "profunctor," one based in category and one based in Haskell code.
+But enough is enough! Let's tackle profunctors without _any_ knowledge
+of category theory and see how far we can get. Let's begin from the
+Haskell definition:
 
-* Definition (1) says a profunctor is the functor Hask<sup>op</sup> ×
-  Hask → Hask, with all the corollaries that claim implies. We could
-  spend a lot of time unpacking this definition, but just go read the
-  sigfpe's blog post.
+```haskell
+class Profunctor p where
+  dimap :: (a -> b) -> (c -> d) -> p b c -> p a d
+  -- where dimap (f . g) (h . i) ≡ dimap g h . dimap f i
+```
 
-* Definition (2) says a profunctor is
+This says that a type `p` is a profunctor iff
 
-    ```haskell
-    class Profunctor p where
-      -- law: dimap (f . g) (h . i) ≡ dimap g h . dimap f i
-      dimap :: (a -> b) -> (c -> d) -> p b c -> p a d
-      ```
+* For some function `ab :: a -> b`, and
+* For some function `cd :: c -> d`,
+* There exists a function `pbcpad :: p b c -> p a d`, and
+* We call such a function a _dimap_.
+
+## What are dimaps?
+
+`dimap` sounds like it's been named carefully, as to rhyme with a
+Functor's `map`, but Functors are magic and we will drive past this
+rest stop, so as to avoid any hand-wavy explanations.
+
+So what are dimaps? It's far too heavy a type to carry around in your
+head, yet we lack the mathematical machinery to simplify and analyze
+and synthesize a working intuition for it.
+
+So I propose this: a visual.
+
+    a         ⇗ c        a ⇘         c
+    |       ⇗   |        |   ⇘       |
+    |     ⇗     |        |     ⇘     |
+    v   ⇗       v        v       ⇘   v
+    b ⇗         d        b         ⇘ d
+
+        p b c       ->       p a d
+
+In _addition_, there is a law here: `dimap (f . g) (h . i) ≡ dimap g h
+. dimap f i`.
+
+Thesis: it is this very law where
 
 (The law is important, so let's restate it here: `dimap` distributes
 over function composition, where `f . g` splits into `g` and `f`
