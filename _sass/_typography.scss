@@ -16,12 +16,8 @@ pre, code {
   font-family: "Ubuntu Mono", "Menlo", "Consolas", monospace;
 }
 
-code {
-  font-size: 12pt;
-}
-
-pre {
-  font-size: 14pt;
+pre, code {
+  font-size: 16pt;
 }
 
 @media (max-device-width: 800px) {
@@ -64,8 +60,8 @@ a[rev="footnote"] {
   margin-left: 3px;
 }
 
-pre, code {
-  background: rgb(253, 246, 227);
+code {
+  background: yellow;
 }
 
 code {
