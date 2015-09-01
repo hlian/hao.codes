@@ -14,9 +14,6 @@ body {
 
 pre, code {
   font-family: "Ubuntu Mono", "Menlo", "Consolas", monospace;
-}
-
-pre, code {
   font-size: 16pt;
 }
 
@@ -70,6 +67,10 @@ pre code {
 
 code {
   padding: 2px 5px;
+}
+
+pre {
+  padding: 5px;
 }
 
 pre code {
