@@ -61,7 +61,11 @@ a[rev="footnote"] {
 }
 
 code {
-  background: yellow;
+  background: cyan;
+}
+
+pre code {
+  background: none;
 }
 
 code {
