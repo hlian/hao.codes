@@ -3,18 +3,18 @@
 }
 
 html {
-  font-family: helvetica, arial, serif;
-  font-size: 16pt;
+  font-family: georgia, serif;
+  font-size: 14pt;
   background: #fcfbfc;
 }
 
 body {
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 pre, code {
   font-family: "Ubuntu Mono", "Menlo", "Consolas", monospace;
-  font-size: 16pt;
+  font-size: 12pt;
 }
 
 @media (max-device-width: 800px) {
@@ -59,6 +59,10 @@ a[rev="footnote"] {
 
 code {
   background: cornsilk;
+}
+
+pre {
+  border-left: 5px solid cornsilk;
 }
 
 pre code {
