@@ -171,7 +171,7 @@ I find writing a clean function `f` involves asking myself:
   
   Sure I could just inline that logic into my definition of `f`, but I'd rather pull the abstraction out and give it a name.
   
-I think these are just standard 1970s top-down programming techniques applied Haskell.
+I think these are just the standard 1970s top-down programming techniques applied to Haskell.
 
 ## Fiber
 
