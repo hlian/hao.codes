@@ -16,6 +16,20 @@ Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide
 
 Everybody hangs out at [/r/haskell](https://www.reddit.com/r/haskell). You'll see anything from questions from new users to discussion about the latest ICFP papers. The community is incredibly kind and supportive. If you want something less noisy than IRC or a mailing list, try subscribing to the subreddit.
 
+## Learning Haskell
+
+* [Learn You a Haskell for Great Good!](http://learnyouahaskell.com)
+
+* [Try Haskell! An interactive tutorial in your browser](http://tryhaskell.org)
+
+* [What I Wish I Knew When Learning Haskell](http://dev.stephendiehl.com/hask/) by Stephen Diehl
+
+* [Write You a Haskell](http://dev.stephendiehl.com/fun/) by Stephen Diehl
+
+* [The original paper by Philip Wadler that proposed the Monad typeclass](http://homepages.inf.ed.ac.uk/wadler/papers/marktoberdorf/baastad.pdf) – surprisingly readable
+
+* [Cryptopals](http://cryptopals.com/sets/1/) – not the worst way to learn Haskell, and you'll learn modern applied information security to boot (you'll probably need [Crypto.Cipher.AES128](https://hackage.haskell.org/package/cipher-aes128/docs/Crypto-Cipher-AES128.html) or [Crypto.Cipher.AES.Haskell](https://hackage.haskell.org/package/cryptocipher/docs/Crypto-Cipher-AES-Haskell.html) to complete the first chapter)
+
 ## Creating a new package
 
 ```sh
@@ -178,6 +192,8 @@ I think these are just the standard 1970s top-down programming techniques applie
 Upcoming GHC developments we should be excited about:
 
 * [Strict Haskell](https://ghc.haskell.org/trac/ghc/wiki/StrictPragma)
+
+* [MonadFail proposal](https://prime.haskell.org/wiki/Libraries/Proposals/MonadFail)
 
 * [Dependent Haskell](https://ghc.haskell.org/trac/ghc/wiki/DependentHaskell)
 
