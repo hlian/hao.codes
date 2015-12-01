@@ -17,14 +17,14 @@ pre, code {
   font-size: 12pt;
 }
 
-@media (max-device-width: 1700px) {
+@media (max-device-width: 1601px) {
   html, pre {
     /* Justification: your face is closer to the device? */
     font-size: 11pt;
   }
 }
 
-@media (max-device-width: 800px) {
+@media (max-device-width: 801px) {
   html, pre {
     /* Justification: your face is closer to the device? */
     font-size: 10pt;
