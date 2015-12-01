@@ -174,7 +174,7 @@ The default prelude is super annoying because you keep importing tiny minimodule
 
 ## Searching by types
 
-If [Hoogle](https://www.haskell.org/hoogle/) can't find it, try [Hayoo](https://www.haskell.org/hoogle/?q=hPutStrLn).
+If [Hoogle](https://www.haskell.org/hoogle/) can't find it, try [Hayoo](http://hayoo.fh-wedel.de).
 
 ## Short functions
 
