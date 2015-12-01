@@ -162,14 +162,14 @@ I find writing a clean function `f` involves asking myself:
 
 * Do I make an intermediate data structure first? For example, if I'm given a list of points and am asked to compute the midpoint between each two neighbors, I'd usually first call:
 
-  ```haskell
-  twoWindows :: [a] -> [(a, a)]
-  twoWindows [] = []
-  twoWindows [x] = []
-  twoWindows x:y:xs = (x, y):twoWindows xs
-  ```
+    ```haskell
+    twoWindows :: [a] -> [(a, a)]
+    twoWindows [] = []
+    twoWindows [x] = []
+    twoWindows x:y:xs = (x, y):twoWindows xs
+    ```
   
-  Sure I could just inline that logic into my definition of `f`, but I'd rather pull the abstraction out and give it a name.
+    Sure I could just inline that logic into my definition of `f`, but I'd rather pull the abstraction out and give it a name.
   
 I think these are just the standard 1970s top-down programming techniques applied to Haskell.
 
