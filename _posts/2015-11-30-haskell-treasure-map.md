@@ -233,7 +233,7 @@ Upcoming GHC developments we should be excited about:
 
 ## Parametricity a.k.a. theorems for free
 
-Using types and typeclasses to generate and prove theorems about a function's invariants. This is like if all your life you carried around this intuition about how something works and then one day someone comes along and validates all of it with mathematics and good writing.
+Using types and typeclasses to generate and prove theorems about a function's invariants. This is like if all your life you carried around this intuition about how something works and then one day someone came along and validated all of it with mathematics and good writing.
 
 * [@parametricity](https://twitter.com/parametricity)
 
