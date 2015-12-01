@@ -173,6 +173,34 @@ I find writing a clean function `f` involves asking myself:
   
 I think these are just the standard 1970s top-down programming techniques applied to Haskell.
 
+## Horizon
+
+Upcoming GHC developments we should be excited about:
+
+* [Strict Haskell](https://ghc.haskell.org/trac/ghc/wiki/StrictPragma)
+
+* [Dependent Haskell](https://ghc.haskell.org/trac/ghc/wiki/DependentHaskell)
+
+  * [Merging types and kinds](https://typesandkinds.wordpress.com/2015/08/19/planned-change-to-ghc-merging-types-and-kinds/)
+  
+  * [Type families](https://typesandkinds.wordpress.com/2015/09/09/what-are-type-families/)
+
+## Great Haskell blogs
+
+* [Well-Typed](http://www.well-typed.com/blog/)
+
+* [Haskell for all](http://www.haskellforall.com) by Gabriel Gonzalez
+
+* [Bartosz Milewski's Programming Cafe](http://bartoszmilewski.com)
+
+* [Neighborhood of Infinity](http://blog.sigfpe.com) by Dan Piponi
+
+* [Inside 736-131](http://blog.ezyang.com) by Edward Z. Yang
+
+* [Simon Peyton Jones](http://research.microsoft.com/en-us/people/simonpj/) – don't be put off by the academic paper format, as spj is a highly capable technical writer
+
+* [Edward Kmett's talks on YouTube](https://www.google.com/search?q=edward+kmett&oq=edward+kmett&tbm=vid)
+
 ## Fiber
 
 The older you get, the more you'll appreciate a moderate amount of fiber in your daily diet.
