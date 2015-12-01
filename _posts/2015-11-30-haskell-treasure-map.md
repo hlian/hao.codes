@@ -10,7 +10,19 @@ I think many people coming into Haskell are daunted by how many choices they hav
 
 >  This is an active field of development!
 
-Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). Earlier this year I would've said `brew install ghc cabal`, but things move fast in Haskell land. Now stack will even install GHC for you.
+Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). Earlier this year I would've said `brew install ghc cabal`, but things move fast in Haskell land. Now stack will even install GHC for you. Stack is
+
+* A build system that reads off a `.cabal` file and produces binaries for you. Yes, even though it's completely separate from the Cabal project, Stack still uses `.cabal` files. It's confusing.
+
+* And it's a package management tool that creates per-project sandboxes.
+
+* And it installs GHC.
+
+* And it's a package installer that can put binaries into `~/.local/bin`, which you can point your $PATH to.
+
+* And it's an environment setup tool. If you run `stack exec foo` or `stack ghci`, you're running `foo` and `ghci` in the context if your project's sandbox. So those executables only see the packages installed into that sandbox, at fixed known versions.
+
+* And it's a client of [Stackage](http://www.stackage.org), a project that aims to bundle libraries at curated versions into long-term support packages. The way it works is that you register your package with the project, and a build machine runs every now and then to make sure your package still compiles (dependencies and all).
 
 ## Reddit
 
