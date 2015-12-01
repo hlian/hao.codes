@@ -5,7 +5,7 @@
 html {
   font-family: georgia, serif;
   font-size: 14pt;
-  background: #fcfbfc;
+  background: #bcc;
 }
 
 body {
@@ -132,4 +132,8 @@ blockquote {
 
 blockquote cite::before {
   content: "~~~";
+}
+
+.page-content {
+  background: white;
 }
