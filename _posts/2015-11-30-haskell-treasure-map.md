@@ -12,12 +12,28 @@ I think many people coming into Haskell are daunted by how many choices they hav
 
 Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). Earlier this year I would've said `brew install ghc cabal`, but things move fast in Haskell land. Now stack will even install GHC for you.
 
+## Reddit
+
+Everybody hangs out at [/r/haskell](https://www.reddit.com/r/haskell). You'll see anything from questions from new users to discussion about the latest ICFP papers. The community is incredibly kind and supportive. If you want something less noisy than IRC or a mailing list, try subscribing to the subreddit.
+
 ## Creating a new package
 
 ```sh
 $ cd ~/workspace
 $ stack new hello
 ```
+
+## Ensuring a fast development environment
+
+Adding this to your `~/.stack/global/stack.yaml` is a good way of speeding up compilation for development:
+
+```yaml
+ghc-options:
+    # Turn off optimizations for packages
+    "*": -0O
+```
+
+The downside is that you need to turn it off for production builds. But if you're like me, you do production builds on a different machine.
 
 ## Editor environment
 
@@ -33,7 +49,7 @@ You can't go wrong with my [Haskell Emacs scratchpad](https://github.com/hlian/e
 
 * Being able to send code to an interactive GHC REPL
 
-* Restarting when your `.cabal` file changes
+* Restarting the REPL when your `.cabal` file changes
 
 * Being able to go from
 
@@ -50,7 +66,7 @@ You can't go wrong with my [Haskell Emacs scratchpad](https://github.com/hlian/e
   
   with one keypress.
 
-Emacs and Vim have all these features once you install ghc-mod.
+With the right packages, Emacs and Vim have all these features.
 
 ## ghc-mod
 
@@ -124,11 +140,19 @@ Some lens insights:
 
 The default prelude is super annoying because you keep importing tiny minimodules like `Data.Monoid` and `Data.Maybe` to get their helpers. [The base-prelude package](https://hackage.haskell.org/package/base-prelude/docs/src/BasePrelude.html) does all this for you, but you have to turn off implicit preludes (`-XNoImplicitPrelude`).
 
-## Function length
+## Pointfree
 
-Haskell will allow you to express your data pipeline in the most elegant way possible. A good thing to watch out for is functions in Haskell that last for longer than five lines. These might take the form of long `do` blocks, or a mess of `let ... in ... `s and `where`s. These often signal that the function is doing too much.
+[blunt](http://blunt.herokuapp.com) is a little web app that gives you the pointfree version of any function. Be prepared to encounter headache-inducing oddities like `(.) . (.)` or the `Applicative` instance for `(->) r`.
 
-I find writing a clean function `f` usually involves asking myself:
+## Searching by types
+
+If [Hoogle](https://www.haskell.org/hoogle/) can't find it, try [Hayoo](https://www.haskell.org/hoogle/?q=hPutStrLn).
+
+## Short functions
+
+A good thing to watch out for is functions in Haskell that last for longer than five lines. These might take the form of long `do` blocks, or a mess of `let ... in ... `s and `where`s. These often signal that the function is doing too much. Whereas in other languages we might resign ourselves to the mess, in Haskell we can do better.
+
+I find writing a clean function `f` involves asking myself:
 
 * Is `f` is the composition of some series of functions? `f = foo . bar . baz` is one kind of function composition. But so is `f = foo >>= bar >>= baz` (and its categorical cousin `f = foo >=> bar >=> baz`).
 
@@ -136,7 +160,7 @@ I find writing a clean function `f` usually involves asking myself:
 
 * If `f` folding a big structure into a smaller structure, which aggregates or summarizes the information in the big structure? If I'm taking a list and producing a single value, I usually reach for `foldr` and `filter`.
 
-* Do I an intermediate data structure first? For example, if I'm given a list of points and am asked to compute the midpoint between each two neighbors, I'd usually first call:
+* Do I make an intermediate data structure first? For example, if I'm given a list of points and am asked to compute the midpoint between each two neighbors, I'd usually first call:
 
   ```haskell
   twoWindows :: [a] -> [(a, a)]
