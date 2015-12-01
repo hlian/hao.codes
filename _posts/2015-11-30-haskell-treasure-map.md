@@ -4,7 +4,11 @@ title: "The always-updated treasure map to Haskell"
 author: hao
 ---
 
+I think many people coming into Haskell are daunted by how many choices they have to make. Here are good default choices to make. I've noted wherever the answer is still up in the air. Most things are! Many problems in the Haskell world have good, but not great, solutions. A common tension is between power and usability. You could be the person who writes the next great abstraction. I believe in you.
+
 ## Setting up a Haskell environment on OS X
+
+>  This is an active field of development!
 
 Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). Earlier this year I would've said `brew install ghc cabal`, but things move fast in Haskell land. Now stack will even install GHC for you.
 
@@ -50,6 +54,8 @@ Emacs and Vim have all these features once you install ghc-mod.
 
 ## ghc-mod
 
+>  This is an active field of development!
+
 Is a research project. It's its own executable `ghc-mod(1)` that you can build and install with `stack install ghc-mod`. But it's also the name of the Emacs/Vim packages that talks to the executable, which is very confusing.
 
 ## HTTP client
@@ -61,6 +67,8 @@ Use [wreq](https://hackage.haskell.org/package/wreq).
 Use [warp](https://hackage.haskell.org/package/warp). It implements WAI. If you're coming from Python, WAI is Haskell's WSGI. Or Haskell's Rack. Or Perl's PSGI.
 
 ## HTTP framework
+
+>  This is an active field of development!
 
 This is more divisive. I like to think of each web framework by what new technologies and abstractions they use. These three have all picked very interesting choices, making the Haskell web framework field very diverse:
 
@@ -76,7 +84,27 @@ This isn't like Python or Ruby's web framework ecosystem, where everybody has so
 
 Use [Aeson](https://hackage.haskell.org/package/aeson/docs/Data-Aeson.html).
 
+## Unicode text
+
+Use [Data.Text](http://hackage.haskell.org/package/text/docs/Data-Text.html). It's built on bytestrings and is fast and supports the bare minimum Unicode slicing and dicing. For more Unicode support, see [text-icu](http://hackage.haskell.org/package/text-icu).
+
+## Binary data
+
+Use [Data.Bytestring](https://hackage.haskell.org/package/bytestring). If you need to represent text, upgrade yourself immediately to text.
+
+## Lazy text or bytestrings?
+
+I would say avoid them unless you really know what you're doing. I say this as somebody who doesn't know what he's doing.
+
+## Lazy IO?
+
+>  This is an active field of development!
+
+Lazy IO causes more heartache with resource management and error handling than you would expect. If you want your file handles to close at sensible times, use [pipes](https://hackage.haskell.org/package/pipes/docs/Pipes-Tutorial.html) or [conduit](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview). Unfortunately they're both a little hard to use.
+
 ## Lenses
+
+>  This is an active field of development!
 
 You're going to keep hearing about lenses because the lens package has achieved remarkable success in the past couple of years, both in terms of creativity and popularity. [This series of blog posts](http://artyom.me/lens-over-tea-1) takes the time to explain and derive lenses. Lenses tutorials have the same problem as monad tutorials. The reason lenses and monads exist is long-time Haskellers all noticed the same problem, and a lot of (abstract) thought went into thinking of a solution. The original sin of lenses is functionally updating a complicated data structure. The solution is ... complicated.
 
