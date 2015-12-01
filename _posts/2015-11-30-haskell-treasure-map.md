@@ -219,6 +219,18 @@ Upcoming GHC developments we should be excited about:
 
 * [Edward Kmett's talks on YouTube](https://www.google.com/search?q=edward+kmett&oq=edward+kmett&tbm=vid)
 
+## Parametricity a.k.a. theorems for free
+
+Using types and typeclasses to generate and prove theorems about a function's invariants. This is like if all your life you carried around this intuition about how something works and then one day someone comes along and validates all of it with mathematics and good writing.
+
+* [@parametricity](https://twitter.com/parametricity)
+
+* [Parametricity: Money for Nothing](http://bartoszmilewski.com/2014/09/22/parametricity-money-for-nothing-and-theorems-for-free/) by Bartosz Milewski
+
+* [Parametricity Tutorial (Part 1)](http://www.well-typed.com/blog/2015/05/parametricity/) by Edsko de Vries
+
+* [Theorems for free!](http://ttic.uchicago.edu/~dreyer/course/papers/wadler.pdf) by Philip Wadler
+
 ## Fiber
 
 The older you get, the more you'll appreciate a moderate amount of fiber in your daily diet.
