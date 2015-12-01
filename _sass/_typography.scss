@@ -28,6 +28,11 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
 
+.post h2 {
+  border-bottom: 1px dashed black;
+  padding-bottom: 5px;
+}
+
 ul {
   list-style-type: disc;
 }
