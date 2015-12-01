@@ -80,7 +80,7 @@ Use [wreq](https://hackage.haskell.org/package/wreq).
 
 ## HTTP server
 
-Use [warp](https://hackage.haskell.org/package/warp). It implements WAI. If you're coming from Python, WAI is Haskell's WSGI. Or Haskell's Rack. Or Perl's PSGI.
+Use [warp](https://hackage.haskell.org/package/warp). It implements WAI. If you're coming from Python, WAI is Haskell's WSGI. Or Ruby's Rack. Or Perl's PSGI.
 
 ## HTTP framework
 
