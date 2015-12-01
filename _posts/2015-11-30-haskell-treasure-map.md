@@ -90,7 +90,7 @@ You can't go wrong with my [Haskell Emacs scratchpad](https://github.com/hlian/e
     f x = x
     ```
   
-  with one keypress.
+    with one keypress.
 
 With the right packages, Emacs and Vim have all these features.
 
