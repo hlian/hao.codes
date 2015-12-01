@@ -96,6 +96,8 @@ Use [wreq](https://hackage.haskell.org/package/wreq).
 
 Use [warp](https://hackage.haskell.org/package/warp). It implements WAI. If you're coming from Python, WAI is Haskell's WSGI. Or Ruby's Rack. Or Perl's PSGI.
 
+[WAI even supports HTTP/2 now](https://github.com/yesodweb/wai/pull/399/files).
+
 ## HTTP framework
 
 >  This is an active field of development!
