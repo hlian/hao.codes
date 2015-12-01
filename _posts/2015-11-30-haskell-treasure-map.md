@@ -79,16 +79,16 @@ You can't go wrong with my [Haskell Emacs scratchpad](https://github.com/hlian/e
 
 * Being able to go from
 
-  ```haskell
-  f x = x
-  ```
+    ```haskell
+    f x = x
+    ```
   
-  to
+    to
   
-  ```haskell
-  f :: a -> a
-  f x = x
-  ```
+    ```haskell
+    f :: a -> a
+    f x = x
+    ```
   
   with one keypress.
 
