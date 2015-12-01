@@ -4,7 +4,7 @@ title: "The always-updated treasure map to Haskell"
 author: hao
 ---
 
-I think many people coming into Haskell are daunted by how many choices they have to make. Here are good default choices to make. I've noted wherever the answer is still up in the air. Most things are! Many problems in the Haskell world have good, but not great, solutions. A common tension is between power and usability. You could be the person who writes the next great abstraction. I believe in you.
+I think many people coming into Haskell are daunted by how many choices they have to make. Here are good default choices to make. I've noted wherever the answer is still up in the air. Most things are! Many problems in the Haskell world have good, but not great, solutions. A common tension is between power and usability; type specificity and inference; brains and heart. You could be the person who writes the next great abstraction. I believe in you.
 
 ## Setting up a Haskell environment on OS X
 
@@ -116,7 +116,7 @@ I would say avoid them unless you really know what you're doing. I say this as s
 
 >  This is an active field of development!
 
-Lazy IO causes more heartache with resource management and error handling than you would expect. If you want your file handles to close at sensible times, use [pipes](https://hackage.haskell.org/package/pipes/docs/Pipes-Tutorial.html) or [conduit](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview). Unfortunately they're both a little hard to use.
+Lazy IO causes more heartache with resource management and error handling than you would expect. Try [pipes](https://hackage.haskell.org/package/pipes/docs/Pipes-Tutorial.html) or [conduit](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview) instead, which lets you build out streaming data pipelines without leaking file handles or badly handling IO errors. Unfortunately they're both a little hard to use.
 
 ## Lenses
 
