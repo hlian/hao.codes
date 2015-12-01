@@ -169,7 +169,7 @@ I find writing a clean function `f` involves asking myself:
     twoWindows x:y:xs = (x, y):twoWindows xs
     ```
   
-    Sure I could just inline that logic into my definition of `f`, but I'd rather pull the abstraction out and give it a name.
+    I could just inline this logic into my definition of `f`, but I'd rather pull the abstraction out and give it a name.
   
 I think these are just the standard 1970s top-down programming techniques applied to Haskell.
 
