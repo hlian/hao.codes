@@ -78,7 +78,17 @@ Use [Aeson](https://hackage.haskell.org/package/aeson/docs/Data-Aeson.html).
 
 ## Lenses
 
-It takes forever to understand lenses. [This series of blog posts](http://artyom.me/lens-over-tea-1) actually takes the time to explain and derive lenses, but lenses tutorials have the same problem as monad tutorials. The reason lenses and monads exist is that lots of people used Haskell for a long time and all noticed the same problem, but a lot of (abstract) thought went into thinking of a solution. The end result is something that is very hard to explain but, with time and experience, will definitely click with you and then you'll wonder why more languages aren't powerful enough to express lenses.
+You're going to keep hearing about lenses because the lens package has achieved remarkable success in the past couple of years, both in terms of creativity and popularity. [This series of blog posts](http://artyom.me/lens-over-tea-1) takes the time to explain and derive lenses. Lenses tutorials have the same problem as monad tutorials. The reason lenses and monads exist is long-time Haskellers all noticed the same problem, and a lot of (abstract) thought went into thinking of a solution. The original sin of lenses is functionally updating a complicated data structure. The solution is ... complicated.
+
+Some lens insights:
+
+* Prisms, getters, setters, traversals, and uppercase-L `Lens` in the lens package all compose with `.` It all typechecks and type-inferences. This seems like it was easy to get right but it _wasn't_ and that's the secret genius of the lens package. _Against all odds, they got all this stuff working with `.`._
+
+* If you compose a bunch of lens together, you get back the lowest common denominator on [this UML diagram](https://hackage.haskell.org/package/lens). So composing a setter with anything automatically makes it the result a setter. And you can't compose a setter with a getter – you need a `Lens`. And a `Lens` composed with a traversal is always a traversal. And only compositions of isomorphisms will yield an isomoprhism. _Against all odds, they got all this UML diagram to work exactly as you think it would._
+
+* 99% of lens usage boils down to `bigDataStructure operator (lens1 . lens2 . lens3)`, where operator is one of `^.`, `^?`, or `^..`.
+
+* It's a lot easier to convert between text and bytestring, and strict and lazy text, and strict and lazy bytestring with the isomorphisms from [Data.Text.Lens](https://hackage.haskell.org/package/lens/docs/Data-Text-Lens.html) and [Data.ByteString.Lens](https://hackage.haskell.org/package/lens/docs/Data-ByteString-Lens.html). I got rid of most of my `Data.ByteString` and `Data.Text` imports after I learned this.
 
 ## Prelude
 
