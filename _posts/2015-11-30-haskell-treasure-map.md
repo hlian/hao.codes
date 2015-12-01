@@ -88,7 +88,9 @@ Some lens insights:
 
 * 99% of lens usage boils down to `bigDataStructure operator (lens1 . lens2 . lens3)`, where operator is one of `^.`, `^?`, or `^..`.
 
-* It's a lot easier to convert between text and bytestring, and strict and lazy text, and strict and lazy bytestring with the isomorphisms from [Data.Text.Lens](https://hackage.haskell.org/package/lens/docs/Data-Text-Lens.html) and [Data.ByteString.Lens](https://hackage.haskell.org/package/lens/docs/Data-ByteString-Lens.html). I got rid of most of my `Data.ByteString` and `Data.Text` imports after I learned this.
+* Stop packing and unpacking your strings into bytestrings and vice versa. Use [Data.Text.Lens](https://hackage.haskell.org/package/lens/docs/Data-Text-Lens.html) and [Data.ByteString.Lens](https://hackage.haskell.org/package/lens/docs/Data-ByteString-Lens.html).
+
+* Stop calling `toStrict/fromStrict` and `toChunks/fromChunks` to convert between strict and lazy bytestrings (and texts). Use [Control.Lens.Iso](https://hackage.haskell.org/package/lens/docs/Control-Lens-Iso.html#t:Strict) instead.
 
 ## Prelude
 
