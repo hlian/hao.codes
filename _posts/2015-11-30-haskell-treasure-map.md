@@ -106,7 +106,7 @@ Use [Data.Text](http://hackage.haskell.org/package/text/docs/Data-Text.html). It
 
 ## Binary data
 
-Use [Data.Bytestring](https://hackage.haskell.org/package/bytestring). If you need to represent text, upgrade yourself immediately to text.
+Use [Data.ByteString](https://hackage.haskell.org/package/bytestring). If you need to represent text, upgrade yourself immediately to text.
 
 ## Lazy text or bytestrings?
 
