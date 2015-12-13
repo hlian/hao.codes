@@ -129,6 +129,9 @@ Which is a fold![^fold]
 
 λ> getSum $ foldMapOf (cosmos . _Number) Sum x
 8.0
+
+λ> getProduct $ foldMapOf (cosmos . _Number) Product x
+12.0
 ```
 
 Pretty neat, right?
