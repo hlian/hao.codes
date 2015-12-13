@@ -15,12 +15,17 @@ body {
 pre, code {
   font-family: "Ubuntu Mono", "Menlo", "Consolas", monospace;
   font-size: 12pt;
+  line-height: 1.2;
 }
 
 @media (max-device-width: 1601px) {
   html, pre {
     /* Justification: your face is closer to the device? */
     font-size: 11pt;
+  }
+
+  pre, code {
+    font-size: 10pt;
   }
 }
 
@@ -50,18 +55,23 @@ ol {
 
 a[rel="footnote"] {
   vertical-align: super;
-  font-size: 0.7em;
+  font-size: 0.9rem;
+  line-height: 1;
+  background: none;
+  text-shadow: none;
   display: inline-block;
   position: relative;
-  top: 3px;
+  top: 0.1rem;
   text-decoration: none;
-  background: lightblue;
-  padding: 0 2px;
-  color: black;
+  padding-right: 3px;
 }
 
-a[rel="footnote"]:hover {
-  background: cyan;
+a[rel="footnote"]:hover:before {
+  content: '[';
+}
+
+a[rel="footnote"]:hover:after {
+  content: ']';
 }
 
 a[rev="footnote"] {
