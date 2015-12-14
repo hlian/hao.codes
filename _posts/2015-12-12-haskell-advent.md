@@ -43,12 +43,10 @@ This covers part one. Part two, to continue the brute-force approach, would invo
 ## Rose-colored lens
 
 But: Faithful readers of _Spoke Proof_ will remember our post
-["Lens and JSON are best friends in Haskell."](/lenses-heart-json.html) What does a lensy solution look like? Let's try this. We know that we have a big data structure and we want to summarize it by taking a sum. This suggests we need to use a fold.
-
-So let's fold over our `json :: Value` with `foldMapOf someFold`; furthermore, let's fold inside the `Sum` monoid, whose monoidal operator is addition.
+["Lens and JSON are best friends in Haskell."](/lenses-heart-json.html) What does a lensy solution look like? Let's try `sumOf`. It takes two arguments: a fold (so it knows what to sum over) and the object to traverse.
 
 ```haskell
-lensy json = getSum (foldMapOf someFold Sum) json
+tally = sumOf someFold
 ```
 
 What should our fold be? It does not immediately seem obvious that such a lens exists. We would need a lens that targets _every number_ in the JSON object. Fortunately, there is something very close: [`Control.Lens.Plated`](https://hackage.haskell.org/package/lens-4.13/docs/Control-Lens-Plated.html).
@@ -127,10 +125,10 @@ Which is a fold![^fold]
 λ> x ^.. (cosmos . _Number)
 [1.0, 2.0, 2.0, 3.0]
 
-λ> getSum $ foldMapOf (cosmos . _Number) Sum x
+λ> sumOf (cosmos . _Number) x
 8.0
 
-λ> getProduct $ foldMapOf (cosmos . _Number) Product x
+λ> productOf (cosmos . _Number) x
 12.0
 ```
 
@@ -162,7 +160,7 @@ This means we can pass in a custom fold that filters out all the riff-raff objec
 λ> x ^.. cosmosOf (plate . filtered nonred) . _Number
 [1.0, 2.0, 3.0]
 
-λ> getSum $ foldMapOf (cosmosOf (plate . filtered nonred) . _Number) Sum x
+λ> sumOf (cosmosOf (plate . filtered nonred) . _Number) x
 6.0
 ```
 
@@ -182,7 +180,7 @@ nonred (Object o) | "red" `elem` o = False
 nonred _ = True
 
 input      = (^?! _Value) <$> readFile "<snip>"
-tally fold = getSum . foldMapOf (cosmosOf fold . _Number) Sum <$> input
+tally fold = sumOf (fold . _Number) <$> input
 main       = (,) <$> tally plate <*> tally (plate . filtered nonred)
 ```
 
