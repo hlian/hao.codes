@@ -126,6 +126,10 @@ This is more divisive. I like to think of each web framework by what new technol
 
 This isn't like Python or Ruby's web framework ecosystem, where everybody has sort of decided to coalesce around a monolithic, invent-the-wheels framework (Django, Rails) with lots of smaller, more modular options (Camping, Sinatra, Flask). Lens, conduits, and type-level programming are all cutting-edge stuff.
 
+## Web Sockets
+
+Use [jaspervdj/websockets](https://hackage.haskell.org/package/websockets) for insecure port-80 Web Sockets; use Taylor Fausak's [wuss](https://hackage.haskell.org/package/wuss) to get TLS.
+
 ## JSON
 
 Use [Aeson](https://hackage.haskell.org/package/aeson/docs/Data-Aeson.html).
@@ -198,9 +202,9 @@ I find writing a clean function `f` involves asking myself:
     twoWindows [x] = []
     twoWindows x:y:xs = (x, y):twoWindows xs
     ```
-  
+
     I could just inline this logic into my definition of `f`, but I'd rather pull the abstraction out and give it a name.
-  
+
 I think these are just the standard 1970s top-down programming techniques applied to Haskell.
 
 ## Horizon
@@ -214,7 +218,7 @@ Upcoming GHC developments we should be excited about:
 * [Dependent Haskell](https://ghc.haskell.org/trac/ghc/wiki/DependentHaskell)
 
   * [Merging types and kinds](https://typesandkinds.wordpress.com/2015/08/19/planned-change-to-ghc-merging-types-and-kinds/)
-  
+
   * [Type families](https://typesandkinds.wordpress.com/2015/09/09/what-are-type-families/)
 
 ## Great Haskell blogs
@@ -252,3 +256,11 @@ The older you get, the more you'll appreciate a moderate amount of fiber in your
 ## Monospace font
 
 Try Ubuntu Mono!
+
+## Updates to this document
+
+* 2015 Nov 30: the initial draft was published after a rousing
+  discussion in my friends and I's #haskell Slack channel.
+
+* 2015 Jan 3: added Web Sockets mention after a fun day with Slack's
+  real-time messaging API.
