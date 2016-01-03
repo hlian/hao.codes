@@ -4,7 +4,9 @@ title: "The always-updated treasure map to Haskell"
 author: hao
 ---
 
-I think many people coming into Haskell are daunted by how many choices they have to make. Here are good default choices to make. I've noted wherever the answer is still up in the air. Most things are! Many problems in the Haskell world have good, but not great, solutions. A common tension is between power and usability; type specificity and inference; brains and heart. You could be the person who writes the next great abstraction. I believe in you.
+Many people coming into Haskell are daunted by number of choices they have to make: which package to use, which _package manager_ to use, which language extensions to turn on, which resources to read.
+
+So here are some sensible default choices. I've noted wherever the answer is still up in the air. Most things are! Many problems in our world have good, but not great, solutions.
 
 ## Setting up a Haskell environment on OS X
 
@@ -12,17 +14,17 @@ I think many people coming into Haskell are daunted by how many choices they hav
 
 Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). Earlier this year I would've said `brew install ghc cabal`, but things move fast in Haskell land. Stack is
 
-* A build system that reads off a `.cabal` file and produces binaries for you. Yes, even though it's completely separate from the Cabal project, Stack still uses `.cabal` files. It's confusing.
+* A build system for packages that reads off a `.cabal` file and does cartwheels for you. Yes, even though Stack is completely separate from the Cabal project, Stack still uses `.cabal` files to describe the package. It's confusing.
 
-* And it's a package management tool that creates per-project sandboxes.
+* And also it's a package management tool that creates per-project sandboxes.
 
-* And it installs GHC (`stack setup`).
+* And also it installs GHC (`stack setup`).
 
-* And it's a package installer that can put binaries into `~/.local/bin`, which you can point your $PATH to (run `stack install` outside a project).
+* And also it's a package installer that can put binaries into `~/.local/bin`, which you can point your $PATH to (run `stack install` outside a project).
 
-* And it's an environment setup tool. If you run `stack exec foo` or `stack ghci`, you're running `foo` and `ghci` in the context if your project's sandbox. So those executables only see the packages installed into that sandbox, at fixed known versions.
+* And also it's an environment setup tool. If you run `stack exec foo` or `stack ghci`, you're running `foo` and `ghci` in the context if your project's sandbox. Those executables will only see the packages installed into that sandbox.
 
-* And it's a client of [Stackage](http://www.stackage.org), a project that aims to bundle libraries at curated versions into long-term support packages. The way it works is that you register your package with the project, and a build machine runs every now and then to make sure your package still compiles (dependencies and all).
+* And also it's a client of [Stackage](http://www.stackage.org), a project that aims to fix libraries at curated versions into long-term support packages. The way it works is that you register your package with the project, and a build machine periodically runs to make sure your package still compiles (transitive dependencies and all).
 
 ## Reddit
 
@@ -82,14 +84,14 @@ You can't go wrong with my [Haskell Emacs scratchpad](https://github.com/hlian/e
     ```haskell
     f x = x
     ```
-  
+
     to
-  
+
     ```haskell
     f :: a -> a
     f x = x
     ```
-  
+
     with one keypress.
 
 With the right packages, Emacs and Vim have all these features.
