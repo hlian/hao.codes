@@ -249,6 +249,10 @@ Using types and typeclasses to generate and prove theorems about a function's in
 
 * [Theorems for free!](http://ttic.uchicago.edu/~dreyer/course/papers/wadler.pdf) by Philip Wadler
 
+## Opting into strictness
+
+Confused about `seq` and weak-head normal form? Read [Roman Cheplyaka's blog post on forcing lists](https://ro-che.info/articles/2015-05-28-force-list).
+
 ## Fiber
 
 The older you get, the more you'll appreciate a moderate amount of fiber in your daily diet.
