@@ -3,9 +3,7 @@ title:
 url:
   "http://hao.codes"
 markdown:
-  redcarpet
-redcarpet:
-  extensions: ["smart", "tables", "strikethrough", "superscript", "footnotes"]
+  kramdown
 highlighter:
   pygments
 safe:
