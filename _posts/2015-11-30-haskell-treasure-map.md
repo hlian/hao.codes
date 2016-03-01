@@ -12,7 +12,9 @@ So here are some sensible default choices. I've noted wherever the answer is sti
 
 >  This is an active field of development!
 
-Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). Earlier this year I would've said `brew install ghc cabal`, but things move fast in Haskell land. Stack is
+Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). On older blog posts you'll see people recommend cabal-install, but it's far too easy to corrupt your package database with cabal-install, so I cannot ever recommend it to newcomers with good conscience.
+
+Stack is
 
 * A build system for packages that reads off a `.cabal` file and does cartwheels for you. Yes, even though Stack is completely separate from the Cabal project, Stack still uses `.cabal` files to describe the package. It's confusing.
 
@@ -25,6 +27,8 @@ Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide
 * And also it's an environment setup tool. If you run `stack exec foo` or `stack ghci`, you're running `foo` and `ghci` in the context if your project's sandbox. Those executables will only see the packages installed into that sandbox.
 
 * And also it's a client of [Stackage](http://www.stackage.org), a project that aims to fix libraries at curated versions into long-term support packages. The way it works is that you register your package with the project, and a build machine periodically runs to make sure your package still compiles (transitive dependencies and all).
+
+Awooga: OS X users will be tempted to use Homebrew to install Stack but that will compile it from source (it's not always bottled). Best to [just unzip an official release](https://github.com/commercialhaskell/stack/releases).
 
 ## Reddit
 
