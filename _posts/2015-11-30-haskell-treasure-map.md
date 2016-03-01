@@ -55,9 +55,9 @@ $ cd ~/workspace
 $ stack new hello
 ```
 
-## Ensuring a fast development environment
+## The pain of compilation
 
-Adding this to your `~/.stack/global/stack.yaml` is a good way of speeding up compilation for development:
+Compiling Haskell is _slow_. Add this to your `~/.stack/global/stack.yaml` to your development machines to turn off optimizations for your projects. (It makes a difference.)
 
 ```yaml
 ghc-options:
@@ -65,7 +65,13 @@ ghc-options:
     "*": -0O
 ```
 
-The downside is that you need to turn it off for production builds. But if you're like me, you do production builds on a different machine.
+My setup:
+
+* One terminal that just runs `stack build --file-watch`; Stack will subscribe to filesystem changes and rebuild automatically.
+
+* Another terminal with `stack ghci --no-build`. Edit, get rid of all the flycheck squiggles, type `:r` in the terminal, have my code reloaded, use the terminal to run code, edit, repeat.
+
+* Rebind `;` to `:` in terminal. I never type semicolon, but I type colon all the time.
 
 ## Editor environment
 
