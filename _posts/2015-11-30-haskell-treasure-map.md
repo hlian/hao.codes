@@ -100,11 +100,19 @@ You can't go wrong with my [Haskell Emacs scratchpad](https://github.com/hlian/e
 
 With the right packages, Emacs and Vim have all these features.
 
-## ghc-mod
+## ghci-ng
 
 >  This is an active field of development!
 
-Is a research project. It's its own executable `ghc-mod(1)` that you can build and install with `stack install ghc-mod`. But it's also the name of the Emacs/Vim packages that talks to the executable, which is very confusing.
+[is a Chris Doner joint](https://github.com/chrisdone/ghci-ng). If you use Emacs and haskell-mode, you should install it and set up these keybindings:
+
+    ```lisp
+    (define-key interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
+    (define-key interactive-haskell-mode-map (kbd "C-c C-t") 'haskell-mode-show-type-at)
+    (define-key interactive-haskell-mode-map (kbd "C-?") 'haskell-mode-find-uses)
+    ```
+    
+Wildly useful stuff. You'll have to jump through some hoops to [connect it to `stack ghci`](https://github.com/commercialhaskell/stack/issues/1024), if your projects use Stack.
 
 ## HTTP client
 
