@@ -5,7 +5,7 @@ url:
 markdown:
   kramdown
 highlighter:
-  pygments
+  rouge
 safe:
   true
 lsi:
