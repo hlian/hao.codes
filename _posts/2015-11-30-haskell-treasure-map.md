@@ -106,11 +106,11 @@ With the right packages, Emacs and Vim have all these features.
 
 [is a Chris Doner joint](https://github.com/chrisdone/ghci-ng). If you use Emacs and haskell-mode, you should install it and set up these keybindings:
 
-    ```lisp
-    (define-key interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
-    (define-key interactive-haskell-mode-map (kbd "C-c C-t") 'haskell-mode-show-type-at)
-    (define-key interactive-haskell-mode-map (kbd "C-?") 'haskell-mode-find-uses)
-    ```
+```lisp
+(define-key interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
+(define-key interactive-haskell-mode-map (kbd "C-c C-t") 'haskell-mode-show-type-at)
+(define-key interactive-haskell-mode-map (kbd "C-?") 'haskell-mode-find-uses)
+```
     
 Wildly useful stuff. You'll have to jump through some hoops to [connect it to `stack ghci`](https://github.com/commercialhaskell/stack/issues/1024), if your projects use Stack.
 
