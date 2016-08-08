@@ -1,208 +1,3 @@
-https://www.andres-loeh.de/Servant/servant-wgp.pdf
-
-> Static type systems are the world’s most successful application of formal methods. Types are simple enough to make sense to programmers; they are tractable enough to be machine-checked on every compilation; they carry no run-time overhead; and they pluck a harvest of low-hanging fruit. It makes sense, therefore, to seek to build on this success by making the type system more expressive without giving up the good properties we have mentioned.
-
-> Every static type system embodies a compromise: it rejects some “good” programs and accepts some “bad” ones. As the dependently-typed programming community knows well, the ability to express computation at the type level can improve the “fit”; for example, we might be able to ensure that an alleged red-black tree really has the red-black property. Recent innovations in Haskell have been moving in exactly this direction.
-
-> But, embarrassingly, type-level programming in Haskell is almost entirely untyped, because the kind system has too few kinds (⋆, ⋆ → ⋆, and so on). Not only does this prevent the programmer from properly expressing her intent, but stupid errors in type-level programs simply cause type-level evaluation to get stuck rather than properly generating an error. In addition to being too permissive (by having too few kinds), the kind system is also too restrictive, because it lacks polymorphism. The lack of kind polymorphism is a well-known wart; see, for example, Haskell’s family of Typeable classes, with a separate (virtually identical) class for each kind.
-
-So begins the paper "[Giving Haskell a Promotion][0]."
-
-[0]: http://research.microsoft.com/en-us/people/dimitris/fc-kind-poly.pdf
-
-Types are wonderful creatures, often misunderstood. As the types for a language are strengthened, the compiler is able to reject more programs with mistakes (e.g. preventing `null` dereferences) and yet simultaneously accept more valid programs (e.g. Java 5, which introduced auto-boxing/unboxing; e.g. #2 the different composition operators for Scala `monocle` optics vs. the single `.` for Haskell `lens` optics). For writing programs in production and at scale, we at Originate have found modern typed functional programming languages – which possess many of the smartest typecheckers – to be successful many times over.
-
-In recent times Haskell has sprouted a new kind of typechecking: typechecking at the type level. Kindchecking, if you will (the type of a type is called the "kind" of a type). In Haskell types without any parameterization assigned the star kind `*`. Three examples:
-
-```haskell
-  % stack ghci
-λ> data Impossible
-λ> :kind Impossible
-Impossible :: *
-λ> data Neutral = Aeroplane | Avery
-λ> :kind Neutral
-Neutral :: *
-```
-
-Perhaps the worst-kept secret of Haskell is that it is actually two languages stapled together. The first language lets us smash values together to produce new values while the typechecker does the grunt work of preventing crashes and other undesirable behavior.
-
-[An example: `2 :: Int`, `(+) :: Int -> Int -> Int`, and `3 :: Int` together make `5 :: Int`. Another example: `putStrLn :: String -> RealWorld -> (RealWorld, ())` and `"hello, world" :: String` together make a side effect of type `RealWorld -> (RealWorld, ())`. To be cute, we abbreviate that type as `IO ()`.]
-
-This language that we have is convenient for building up and ripping apart data structures at runtime, but suppose we want to do the same at compiletime. How might we represent numbers and strings at compiletime? How might we build a binary tree, or represent business logic, or even model an HTTP service? For that we turn to Haskell's type-level programming facilities.
-
-At the type level, rather than values with types we have _types_ with _kinds_. Just as every value as a type, every type has a kind.
-
-```haskell
-  % stack ghci
-λ> data Impossible
-λ> :kind Impossible
-Impossible :: *
-λ> data Neutral = Aeroplane | Avery
-λ> :kind Neutral
-Neutral :: *
-λ> :kind Neutral -> Impossible
-Neutral -> Impossible :: *
-```
-
-By default, types introduced by `data`/`newtype` without parameters have kind `*`.
-
-```haskell
-  % stack ghci
-λ> newtype Phantom a = Phantom Int
-λ> :kind Phantom
-Phantom :: * -> *
-λ> newtype State st a = State (st -> (st, a))
-λ> :kind State
-State :: * -> * -> *
-```
-
-Types with one parameter have kind `* -> *`. Types with two parameters have kind `* -> * -> *`. Note that 
-
-
-
-
-
-
-In Haskell, just as we declare values to have types, we can declare types to have _kinds_.
-
-```
-data Count a b c = Zero | One a | Two a b
-
-> :type Zero
-Zero :: Count a b c
-
-> :type One
-One :: a -> Count a b c
-
-> :type Two
-Two :: a -> b -> Count a b c
-```
-
-Here we see three data constructors with three different arities. When we query their types in the REPL we see that the types of these data constructors are indexed by the variables we declared in `data Count`.
-
-As types is to values what kinds are to types, we might ask at this point how to do the same thing at the kind level.
-
-
-
-We might type a traditional HTTP service as
-
-```
-service :: IO ()
-```
-
-This however is unsatisfying.
-
-We might try to extract the pure part of this service as
-
-```
-service :: Request -> Response
-```
-
-But still we fail to encode routing and method and serialization.
-
-How might we represent an HTTP service more fully?
-
-We might turn to type-level programming.
-
-One thing we can do in recent versions of GHC is express trees at the type level.
-
-```
-data a :> b
-```
-
-This declares a new type `(:>)` with kind `(:>) :: * -> * -> *`.
-
-~a brief interlude about types and kinds~
-
-Note that it is impossible construct a value with type `a :> b`. It _only_ exists at the type level. It _only_ exists at compile time.
-
-
-
-
-Remember that we were able to pattern match on the service's routes.
-
-```haskell
-data Route a =
-    Get a
-  | String :> Route a
-  | Route a :| Route a
-
-newtype Depth = Depth Int
-
-display :: Show a => Route a -> IO ()
-display (Get a) =
-  putStrLn ("leaf " <> show a)
-display (parent :> child) = do
-  putStrLn ("parent " <> parent)
-  f child
-display (left :| right) = do
-  putStrLn "left"
-  f left
-  putStrLn "right"
-  f right
-```
-
-We have not lost this ability. At the type-level, we have typeclasses.
-
-```
-import Models (Gizmo, Jinky, Widget)
-
-data Get a
-
-class Display a where
-  display :: Proxy a -> IO ()
-
-instance Display (Get a) where
-  display Proxy =
-    putStrLn ("leaf " <> show ???)
-
-instance Display (parent :> child) where
-  display Proxy = do
-    display (Proxy :: Proxy parent)
-    display (Proxy :: Proxy child)
-
-instance Display (parent :| child) where
-
-type Service =
-     ("gizmos" :> Get [Gizmo])
-  :| ("jinkies" :> Get [Jinky])
-  :| ("widgets" :> Get [Widget])
-
-main =
-  display (Proxy :: Proxy Service)
-```
-
-Let us break this down:
-
-* `display` in `main` is inferred to have type `display :: Proxy Service -> IO ()`
-* this expands out to be `display :: Proxy (("gizmos" :> Get [Gizmo]) :| ...) -> IO ()`
-* `display :: Proxy a -> IO ()` from `class Display` unifies with this type
-* we get a hit for `instance Display (parent :| child)` where `a ~ parent :| child`, `parent ~ "gizmos" :> Get [Gizmo]` and `child ~ (jinkies :> Get [Jinky]) :| ...`
-
-In the `Display` class we use `Proxy` (from `Data.Proxy`) as a way to index our function by the type passed into `display`'s first argument.
-
-~ideally we would just call display as `display @Service` with -XTypeApplications~
-
-
-
-I think what characterizes HTTP work, above all other work, is the amount of paperwork you have to fill out before you can even get any where.
-
-• At the backend you have to structure your service as a tree of "routes," each of which terminate with a verb (get, post, delete, put) and take low-entropy input (either URL query parameters or free-form request body bytes). These dovetail into other essential, and soul-crushingly boring, problems like (1) how do I convert my data structures (high entropy) to and from JSON (low entropy)? or (2) .
-
-
-
-
-
-
-From what little I remember of high-school Advanced Placement Physics AB, I believe every HTTP service is a sort of thermodynamic cycle – some machine that takes in a smattering of URL query parameters and JSON (low-entropy data), deserializes it into data structures complected with business logic and software architecture (high entropy), does work, and serializes the work as the response (low entropy, once more).
-
-
-
-
-
-
-
-
 In the Haskell ecosystem, servant has quickly established itself as a very good framework for writing web apps. Servant's novelty is that it pushes you, the programmer, to represent your web service as a single type. Servant, like Rails before it, is opinionated software. It firmly believes in and has successfully exported the idea that we _can_ and we _should_ code at the type level. That _type-level programming_ is the tool by which we will end up with shorter, safer, and more robust programs.
 
 I confess that I am enamored about this. As someone who has been programming for an unhealthy amount of time, this is somewhat of a holy grail. So, thesis: in this blog post we will attempt to sketch how one might represent a web service, something fairly complicated and practical, at the type level and – in the process – de-mystify type-level gymnastics.
@@ -444,11 +239,11 @@ instance Aeson.ToJSON resource => ToApplication (GET resource) where
 If we were to stop right now, we could still encode an HTTP service with one endpoint:
 
 ```
-type API = GET UTCTime
+type LonelyAPI = GET UTCTime
 
 main :: IO ()
 main =
-  WAI.run 2016 (serve (Proxy :: Proxy API) getCurrentTime)
+  WAI.run 2016 (serve (Proxy :: Proxy LonelyAPI) getCurrentTime)
 ```
 
 This works!
@@ -464,4 +259,251 @@ Content-type: application/json
 "2016-08-08T18:53:43.813072Z"%
 ```
 
-Perhaps that is not too surprising. All we have done is taken the Hello, world! tutorial app for WAI and hidden it inside our convoluted class with its convoluted type family. Speaking of which, _what in the world is going on_?
+The fact that it works is not too surprising. We have the Hello, world! tutorial app for WAI and smuggled it inside our convoluted typeclass. If you view our `API` type as a tree with branches and leaves, then calling `server :: ToApplicationapi => Proxy api -> Server api -> Application` is akin to asking the compiler to recursively visit the nodes of the tree and our `ToApplication (GET resource)` instance is the recursive base case. It is at the base case that we determine the monad to use: here it is `IO resource`, and we could conceive of more pragmatic real-world monads such as `ExceptT SqlError IO resource` or `Reader SqlPool IO resource`.
+
+Our two non-base recursive cases are handling `:/` and `:|`.
+
+```
+{-# language ScopedTypeVariables #-}
+
+import Control.Exception
+import Control.Lens
+
+data RoutingStop =
+  RoutingStop
+  deriving (Show)
+
+instance Exception RoutingStop
+
+instance (KnownSymbol parent, ToApplication children) => ToApplication (parent :/ children) where
+  type Server (parent :/ children) =
+    Server children
+  toApplication Proxy next =
+    application
+    where
+      application request respond =
+        case WAI.pathInfo request of
+          (h:t) | h ^. unpacked == symbolVal (Proxy :: Proxy parent) -> do
+            let subrequest = request { WAI.pathInfo = t }
+            toApplication (Proxy :: Proxy children) next subrequest respond
+          _ ->
+            -- Route directory does not match with `parent`
+            throw RoutingStop
+
+instance (ToApplication head, ToApplication tail) => ToApplication (head :| tail) where
+  type Server (head :| tail) =
+    Server head :| Server tail
+  toApplication Proxy (goLeft :| goRight) =
+    application
+    where
+      headApplication =
+        serve (Proxy :: Proxy head) goLeft
+      tailApplication =
+        serve (Proxy :: Proxy tail) goRight
+      application request respond =
+        catch (headApplication request respond) $ \(_ :: RoutingStop) ->
+          tailApplication request respond
+```
+
+
+[to be written]
+
+## pieces of writing that probably won't make it
+
+https://www.andres-loeh.de/Servant/servant-wgp.pdf
+
+> Static type systems are the world’s most successful application of formal methods. Types are simple enough to make sense to programmers; they are tractable enough to be machine-checked on every compilation; they carry no run-time overhead; and they pluck a harvest of low-hanging fruit. It makes sense, therefore, to seek to build on this success by making the type system more expressive without giving up the good properties we have mentioned.
+
+> Every static type system embodies a compromise: it rejects some “good” programs and accepts some “bad” ones. As the dependently-typed programming community knows well, the ability to express computation at the type level can improve the “fit”; for example, we might be able to ensure that an alleged red-black tree really has the red-black property. Recent innovations in Haskell have been moving in exactly this direction.
+
+> But, embarrassingly, type-level programming in Haskell is almost entirely untyped, because the kind system has too few kinds (⋆, ⋆ → ⋆, and so on). Not only does this prevent the programmer from properly expressing her intent, but stupid errors in type-level programs simply cause type-level evaluation to get stuck rather than properly generating an error. In addition to being too permissive (by having too few kinds), the kind system is also too restrictive, because it lacks polymorphism. The lack of kind polymorphism is a well-known wart; see, for example, Haskell’s family of Typeable classes, with a separate (virtually identical) class for each kind.
+
+So begins the paper "[Giving Haskell a Promotion][0]."
+
+[0]: http://research.microsoft.com/en-us/people/dimitris/fc-kind-poly.pdf
+
+Types are wonderful creatures, often misunderstood. As the types for a language are strengthened, the compiler is able to reject more programs with mistakes (e.g. preventing `null` dereferences) and yet simultaneously accept more valid programs (e.g. Java 5, which introduced auto-boxing/unboxing; e.g. #2 the different composition operators for Scala `monocle` optics vs. the single `.` for Haskell `lens` optics). For writing programs in production and at scale, we at Originate have found modern typed functional programming languages – which possess many of the smartest typecheckers – to be successful many times over.
+
+In recent times Haskell has sprouted a new kind of typechecking: typechecking at the type level. Kindchecking, if you will (the type of a type is called the "kind" of a type). In Haskell types without any parameterization assigned the star kind `*`. Three examples:
+
+```haskell
+  % stack ghci
+λ> data Impossible
+λ> :kind Impossible
+Impossible :: *
+λ> data Neutral = Aeroplane | Avery
+λ> :kind Neutral
+Neutral :: *
+```
+
+Perhaps the worst-kept secret of Haskell is that it is actually two languages stapled together. The first language lets us smash values together to produce new values while the typechecker does the grunt work of preventing crashes and other undesirable behavior.
+
+[An example: `2 :: Int`, `(+) :: Int -> Int -> Int`, and `3 :: Int` together make `5 :: Int`. Another example: `putStrLn :: String -> RealWorld -> (RealWorld, ())` and `"hello, world" :: String` together make a side effect of type `RealWorld -> (RealWorld, ())`. To be cute, we abbreviate that type as `IO ()`.]
+
+This language that we have is convenient for building up and ripping apart data structures at runtime, but suppose we want to do the same at compiletime. How might we represent numbers and strings at compiletime? How might we build a binary tree, or represent business logic, or even model an HTTP service? For that we turn to Haskell's type-level programming facilities.
+
+At the type level, rather than values with types we have _types_ with _kinds_. Just as every value as a type, every type has a kind.
+
+```haskell
+  % stack ghci
+λ> data Impossible
+λ> :kind Impossible
+Impossible :: *
+λ> data Neutral = Aeroplane | Avery
+λ> :kind Neutral
+Neutral :: *
+λ> :kind Neutral -> Impossible
+Neutral -> Impossible :: *
+```
+
+By default, types introduced by `data`/`newtype` without parameters have kind `*`.
+
+```haskell
+  % stack ghci
+λ> newtype Phantom a = Phantom Int
+λ> :kind Phantom
+Phantom :: * -> *
+λ> newtype State st a = State (st -> (st, a))
+λ> :kind State
+State :: * -> * -> *
+```
+
+Types with one parameter have kind `* -> *`. Types with two parameters have kind `* -> * -> *`. Note that 
+
+
+
+
+
+
+In Haskell, just as we declare values to have types, we can declare types to have _kinds_.
+
+```
+data Count a b c = Zero | One a | Two a b
+
+> :type Zero
+Zero :: Count a b c
+
+> :type One
+One :: a -> Count a b c
+
+> :type Two
+Two :: a -> b -> Count a b c
+```
+
+Here we see three data constructors with three different arities. When we query their types in the REPL we see that the types of these data constructors are indexed by the variables we declared in `data Count`.
+
+As types is to values what kinds are to types, we might ask at this point how to do the same thing at the kind level.
+
+
+
+We might type a traditional HTTP service as
+
+```
+service :: IO ()
+```
+
+This however is unsatisfying.
+
+We might try to extract the pure part of this service as
+
+```
+service :: Request -> Response
+```
+
+But still we fail to encode routing and method and serialization.
+
+How might we represent an HTTP service more fully?
+
+We might turn to type-level programming.
+
+One thing we can do in recent versions of GHC is express trees at the type level.
+
+```
+data a :> b
+```
+
+This declares a new type `(:>)` with kind `(:>) :: * -> * -> *`.
+
+~a brief interlude about types and kinds~
+
+Note that it is impossible construct a value with type `a :> b`. It _only_ exists at the type level. It _only_ exists at compile time.
+
+
+
+
+Remember that we were able to pattern match on the service's routes.
+
+```haskell
+data Route a =
+    Get a
+  | String :> Route a
+  | Route a :| Route a
+
+newtype Depth = Depth Int
+
+display :: Show a => Route a -> IO ()
+display (Get a) =
+  putStrLn ("leaf " <> show a)
+display (parent :> child) = do
+  putStrLn ("parent " <> parent)
+  f child
+display (left :| right) = do
+  putStrLn "left"
+  f left
+  putStrLn "right"
+  f right
+```
+
+We have not lost this ability. At the type-level, we have typeclasses.
+
+```
+import Models (Gizmo, Jinky, Widget)
+
+data Get a
+
+class Display a where
+  display :: Proxy a -> IO ()
+
+instance Display (Get a) where
+  display Proxy =
+    putStrLn ("leaf " <> show ???)
+
+instance Display (parent :> child) where
+  display Proxy = do
+    display (Proxy :: Proxy parent)
+    display (Proxy :: Proxy child)
+
+instance Display (parent :| child) where
+
+type Service =
+     ("gizmos" :> Get [Gizmo])
+  :| ("jinkies" :> Get [Jinky])
+  :| ("widgets" :> Get [Widget])
+
+main =
+  display (Proxy :: Proxy Service)
+```
+
+Let us break this down:
+
+* `display` in `main` is inferred to have type `display :: Proxy Service -> IO ()`
+* this expands out to be `display :: Proxy (("gizmos" :> Get [Gizmo]) :| ...) -> IO ()`
+* `display :: Proxy a -> IO ()` from `class Display` unifies with this type
+* we get a hit for `instance Display (parent :| child)` where `a ~ parent :| child`, `parent ~ "gizmos" :> Get [Gizmo]` and `child ~ (jinkies :> Get [Jinky]) :| ...`
+
+In the `Display` class we use `Proxy` (from `Data.Proxy`) as a way to index our function by the type passed into `display`'s first argument.
+
+~ideally we would just call display as `display @Service` with -XTypeApplications~
+
+
+
+I think what characterizes HTTP work, above all other work, is the amount of paperwork you have to fill out before you can even get any where.
+
+• At the backend you have to structure your service as a tree of "routes," each of which terminate with a verb (get, post, delete, put) and take low-entropy input (either URL query parameters or free-form request body bytes). These dovetail into other essential, and soul-crushingly boring, problems like (1) how do I convert my data structures (high entropy) to and from JSON (low entropy)? or (2) .
+
+
+
+
+
+
+From what little I remember of high-school Advanced Placement Physics AB, I believe every HTTP service is a sort of thermodynamic cycle – some machine that takes in a smattering of URL query parameters and JSON (low-entropy data), deserializes it into data structures complected with business logic and software architecture (high entropy), does work, and serializes the work as the response (low entropy, once more).
