@@ -1,3 +1,19 @@
+## Notes for the reader
+
+[hao is slowly importing pieces of code and text from this stack overflow answer](http://stackoverflow.com/questions/37016836/deciphering-datakind-type-promotion-in-servant-library/37020799#37020799)
+
+this piece should tackle content types before the day is gone
+
+another 1500 words are needed, likely
+
+it should end up in 3000-4000 words
+
+we need some explanation of WAI for non-Haskellers
+
+we need some sort of "hey you can read this even if you don't really know Haskell paragraph" to signal a more general audience
+
+## Type-level web programming in Haskell might be some kind of holy grail for the tired and overworked web programmer of 2016
+
 In the Haskell ecosystem, servant has quickly established itself as a very good framework for writing web apps. Servant's novelty is that it pushes you, the programmer, to represent your web service as a single type. Servant, like Rails before it, is opinionated software. It firmly believes in and has successfully exported the idea that we _can_ and we _should_ code at the type level. That _type-level programming_ is the tool by which we will end up with shorter, safer, and more robust programs.
 
 I confess that I am enamored about this. As someone who has been programming for an unhealthy amount of time, this is somewhat of a holy grail. So, thesis: in this blog post we will attempt to sketch how one might represent a web service, something fairly complicated and practical, at the type level and – in the process – de-mystify type-level gymnastics.
