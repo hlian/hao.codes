@@ -6,13 +6,13 @@ I confess that I am enamored about this. As someone who has been programming for
 
 A simple and common kind of type-level primitive is the function. Though we often do not call it that, it is indeed possible to build type-level functions, and we tend to do it without second thought when we build algebraic data types. For example, lists:
 
-```
+```haskell
 data [a] = [] | a:[a]
 ```
 
 A list takes a type from the "usual" "universe" of types (`Int`, `Int -> Float`, `IO (Int -> Float)`, ...) and returns another type (`[Int]`, `[Int -> Float]`, `[IO (Int -> Float)]`, ...). We put these words into scare quotes to heavily signify that To abbreviate this idea, we say it has _kind_ `* -> *`.
 
-```
+```haskell
 > :kind Int
 *
 > :kind Int -> Float
@@ -40,7 +40,7 @@ So, to beat the analogy to death:
 Can we explicitly construct type-level functions? Something like this, perhaps:
 
 
-```
+```haskell
 type Pair = \a -> (a, a)
 ```
 
@@ -50,7 +50,7 @@ This, as opposed to the usual `type Pair a = (a, a)`, would truly clarify the an
 
 As of recent GHC versions we also have natural numbers and strings. They live in the `GHC.TypeLits` module and require a `DataKinds` extension:
 
-```
+```haskell
 > :set -XDataKinds
 > :kind "hello"
 "hello" :: GHC.TypeLits.Symbol
@@ -60,7 +60,7 @@ As of recent GHC versions we also have natural numbers and strings. They live in
 
 Note that we have strayed outside the "usual" "universe," the kind `*`. Unlike the types we know and love in `*`, nothing inhabits these types. There is no value `x` such that `x :: Symbol` or `x :: Nat`. If you were to look up the definitions you would see:
 
-```
+```haskell
 data Nat
 data Symbol
 ```
@@ -71,7 +71,7 @@ Prior to programming in Coq and Haskell, I thought of types as inert little crea
 
 Let us dispel that notion:
 
-```
+```haskell
 > :set -XTypeOperators
 > import GHC.TypeLits
 > :browse
@@ -90,7 +90,7 @@ type family (^) (a :: Nat) (b :: Nat) :: Nat
 
 Here we see that we add, multiply, subtract, and exponentiate type-level naturals.[^ints] We can even ask the constraint solver to solve logarithms:
 
-```
+```haskell
 > import Data.Proxy
 > :{ let f :: Proxy (3 ^ x) -> Proxy x;
    |     f Proxy = Proxy
@@ -105,7 +105,7 @@ Proxy
 
 Here we see the compiler's solving the equation `3 ^ x = 27`. We did this by convincing the compiler to solve the constraint `Proxy (3 ^ x) ~ 27`, which generates the subconstraint `3 ^ x ~ 27`, which (thanks to internal GHC smarts) results in `x ~ 3`. To drive the point home, let us find the logarithm for `28` and `3 ^ 1024 = 3733918...`.
 
-```
+```haskell
 > :type f (Proxy :: Proxy 28)
 f (Proxy :: Proxy 28) :: ((3 ^ x) ~ 28) => Proxy x
 
@@ -155,7 +155,7 @@ Our goals will be Servant's goals:
 
 First, we will need a type-level way to link together the different endpoints of our service:
 
-```
+```haskell
 {-# language DataKinds #-}
 {-# language PolyKinds #-}
 {-# language TypeOperators #-}
@@ -173,7 +173,7 @@ Unfortunately they both have the same name.
 
 We will also need a way to encode URL hierarchy for each endpoint:
 
-```
+```haskell
 data parent :/ children =
   Slash children
 infixr 9 :/
@@ -186,7 +186,7 @@ We should now be able to write a rudimentary service for a web service with the 
 * `GET /time`, which returns the UTC time
 * `GET /about`, which returns a static string
 
-```
+```haskell
 import Data.Time
 
 data GET a
@@ -207,7 +207,7 @@ This is a substantial about of type-level computation to do. If this were at the
 
 For instance, this typeclass will take the type of an API and generate a WAI Application.
 
-```
+```haskell
 {-# language OverloadedStrings #-}
 {-# language TypeFamilies #-}
 
@@ -238,7 +238,7 @@ instance Aeson.ToJSON resource => ToApplication (GET resource) where
 
 If we were to stop right now, we could still encode an HTTP service with one endpoint:
 
-```
+```haskell
 type LonelyAPI = GET UTCTime
 
 main :: IO ()
@@ -248,7 +248,7 @@ main =
 
 This works!
 
-```
+```haskell
 $ curl -i "http://localhost:2016/"
 HTTP/1.1 200 OK
 Transfer-Encoding: chunked
@@ -263,7 +263,7 @@ The fact that it works is not too surprising. We have the Hello, world! tutorial
 
 Our two non-base recursive cases are handling `:/` and `:|`.
 
-```
+```haskell
 {-# language ScopedTypeVariables #-}
 
 import Control.Exception
