@@ -10,29 +10,25 @@ So here are some sensible default choices. I've noted wherever the answer is sti
 
 ## Setting up a Haskell environment on OS X
 
->  This is an active field of development!
+Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). Stack
 
-Use [stack](http://docs.haskellstack.org/en/stable/README.html#quick-start-guide). On older blog posts you'll see people recommend cabal-install, but it's far too easy to corrupt your package database with cabal-install, so I cannot ever recommend it to newcomers with good conscience.
+* Is a sandbox-style package manager. For each project it creates a hermetic little world filled with the project's dependencies and the project itself.
 
-Stack is
+* Sets up a "global" project, which is the default project you work in when you run stack outside a project.
 
-* A build system for packages that reads off a `.cabal` file and does cartwheels for you. Yes, even though Stack is completely separate from the Cabal project, Stack still uses `.cabal` files to describe the package. It's confusing.
+* By the way, a project is any directory with a `*.cabal` or a `package.yaml` file or any subdirectory thereof. I highly recommend using `package.yaml` files, otherwise known as the [hpack][hpack] format. With `*.cabal` files you have to type the name of each module separately _and_ you have to maintain per-target dependencies. What a hassle.
 
-* And also it's a package management tool that creates per-project sandboxes.
+[hpack]: https://github.com/sol/hpack/blob/master/package.yaml
 
-* And also it installs GHC (`stack setup`).
+* Also installs GHC (`stack setup`) for you.
 
-* And also it's a package installer that can put binaries into `~/.local/bin`, which you can point your $PATH to (run `stack install` outside a project).
+* Also maintains your `PATH`. If you run `stack exec foo` or `stack ghci`, you're running `foo` and `ghci` in the context of your project's sandbox.
 
-* And also it's an environment setup tool. If you run `stack exec foo` or `stack ghci`, you're running `foo` and `ghci` in the context if your project's sandbox. Those executables will only see the packages installed into that sandbox.
+Awooga: OS X users will be tempted to use Homebrew to install Stack but that will compile it from source, which takes a good hour on a desktop and possibly longer on laptops. (I have never been patient enough to find out.) Best to [just unzip an official release](https://github.com/commercialhaskell/stack/releases).
 
-* And also it's a client of [Stackage](http://www.stackage.org), a project that aims to fix libraries at curated versions into long-term support packages. The way it works is that you register your package with the project, and a build machine periodically runs to make sure your package still compiles (transitive dependencies and all).
+## The community
 
-Awooga: OS X users will be tempted to use Homebrew to install Stack but that will compile it from source (it's not always bottled). Best to [just unzip an official release](https://github.com/commercialhaskell/stack/releases).
-
-## Reddit
-
-Everybody hangs out at [/r/haskell](https://www.reddit.com/r/haskell). You'll see anything from questions from new users to discussion about the latest ICFP papers. The community is incredibly kind and supportive. If you want something less noisy than IRC or a mailing list, try subscribing to the subreddit.
+Is the best part of Haskell. The community is incredibly kind and supportive. [/r/haskell](https://www.reddit.com/r/haskell) is a medium-traffic subreddit filled with library announcements, fascinating discussions, questions answered by experts, and much else besides. Try [Stack Overflow](http://stackoverflow.com/questions/tagged/haskell) too.
 
 ## Learning Haskell
 
@@ -46,7 +42,9 @@ Everybody hangs out at [/r/haskell](https://www.reddit.com/r/haskell). You'll se
 
 * [The original paper by Philip Wadler that proposed the Monad typeclass](http://homepages.inf.ed.ac.uk/wadler/papers/marktoberdorf/baastad.pdf) – surprisingly readable
 
-* [Cryptopals](http://cryptopals.com/sets/1/) – not the worst way to learn Haskell, and you'll learn modern applied information security to boot (you'll probably need [Crypto.Cipher.AES128](https://hackage.haskell.org/package/cipher-aes128/docs/Crypto-Cipher-AES128.html) or [Crypto.Cipher.AES.Haskell](https://hackage.haskell.org/package/cryptocipher/docs/Crypto-Cipher-AES-Haskell.html) to complete the first chapter)
+* [Cryptopals](http://cryptopals.com/sets/1/) – not the worst way to learn Haskell, and you'll learn modern applied information security to boot (You will probably need [Crypto.Cipher.AES128](https://hackage.haskell.org/package/cipher-aes128/docs/Crypto-Cipher-AES128.html) or [Crypto.Cipher.AES.Haskell](https://hackage.haskell.org/package/cryptocipher/docs/Crypto-Cipher-AES-Haskell.html) to complete the first chapter.)
+
+* [Chris Allen's "How to learn Haskell"](https://github.com/bitemyapp/learnhaskell), another collection of links. Has perhaps the best advice written about Haskell: _Don't sweat the stuff you don't understand immediately. Keep moving!_
 
 ## Creating a new package
 
@@ -55,23 +53,31 @@ $ cd ~/workspace
 $ stack new hello
 ```
 
-## The pain of compilation
+See also:
 
-Compiling Haskell is _slow_. Add this to your `~/.stack/global/stack.yaml` to your development machines to turn off optimizations for your projects. (It makes a difference.)
-
-```yaml
-ghc-options:
-    # Turn off optimizations for packages
-    "*": -0O
+```sh
+$ stack templates
 ```
 
-My setup:
+## The pain of compilation
 
-* One terminal that just runs `stack build --file-watch`; Stack will subscribe to filesystem changes and rebuild automatically.
+Compiling Haskell is _slow_. Add this to your global aliases (assuming you use zsh):
 
-* Another terminal with `stack ghci --no-build`. Edit, get rid of all the flycheck squiggles, type `:r` in the terminal, have my code reloaded, use the terminal to run code, edit, repeat.
+```sh
+alias .fast='--fast --ghc-options="-j +RTS -A1024m -n2m -RTS"'
+```
 
-* Rebind `;` to `:` in terminal. I never type semicolon, but I type colon all the time.
+It will teach GHC to use (1) all your cores and (2) more memory while compiling.
+
+Another useful global alias (assuming you use zsh):
+
+```sh
+alias .fw='--file-watch'
+```
+
+Usage: `stack build .fast .fw`.
+
+Another suggestion: rebind `;` to `:` in your terminal preferences. When Haskelling I never type semicolon but I sure do type colon all the time.
 
 ## Editor environment
 
@@ -106,19 +112,13 @@ You can't go wrong with my [Haskell Emacs scratchpad](https://github.com/hlian/e
 
 With the right packages, Emacs and Vim have all these features.
 
-## ghci-ng
+## IDEs: hdevtools or Intero
 
 >  This is an active field of development!
 
-[is a Chris Doner joint](https://github.com/chrisdone/ghci-ng). If you use Emacs and haskell-mode, you should install it and set up these keybindings:
+* [hdevtools](https://github.com/hdevtools/hdevtools/) runs a GHCi process in the background and lets your editor interactively query it for typechecking and code-reloading purposes. Comes with integrations for Emacs, Vim, Atom, and Sublime. This is the one that I use.
 
-```common_lisp
-(define-key interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
-(define-key interactive-haskell-mode-map (kbd "C-c C-t") 'haskell-mode-show-type-at)
-(define-key interactive-haskell-mode-map (kbd "C-?") 'haskell-mode-find-uses)
-```
-    
-Wildly useful stuff. You'll have to jump through some hoops to [connect it to `stack ghci`](https://github.com/commercialhaskell/stack/issues/1024), if your projects use Stack.
+* [Intero](https://github.com/commercialhaskell/intero) is an Emacs-specific IDE and a rising star. I have not used this much but people speak highly of it.
 
 ## HTTP client
 
@@ -284,5 +284,7 @@ Try Ubuntu Mono!
 * 2015 Nov 30: the initial draft was published after a rousing
   discussion in my friends and I's #haskell Slack channel.
 
-* 2015 Jan 3: added Web Sockets mention after a fun day with Slack's
+* 2016 Jan 3: added Web Sockets mention after a fun day with Slack's
   real-time messaging API.
+
+* 2016 Aug 18: hdevtools and intero mentioned. Typos fixed.
