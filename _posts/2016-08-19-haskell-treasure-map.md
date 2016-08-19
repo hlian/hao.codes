@@ -217,7 +217,6 @@ I find writing a clean function `f` involves asking myself:
 * If `f` folding a big structure into a smaller structure, which aggregates or summarizes the information in the big structure? If I'm taking a list and producing a single value, I usually reach for `foldr` and `filter`.
 
 * Do I make an intermediate data structure first? For example, if I'm given a list of points and am asked to compute the midpoint between each two neighbors, I'd usually first call:
-
 ^
     ```haskell
     twoWindows :: [a] -> [(a, a)]
@@ -225,9 +224,7 @@ I find writing a clean function `f` involves asking myself:
     twoWindows [x] = []
     twoWindows x:y:xs = (x, y):twoWindows xs
     ```
-
 ^
-
     I could just inline this logic into my definition of `f`, but I'd rather pull the abstraction out and give it a name.
 
 I think these are just the standard 1970s top-down programming techniques applied to Haskell.
