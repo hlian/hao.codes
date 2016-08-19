@@ -218,12 +218,13 @@ I find writing a clean function `f` involves asking myself:
 
 * Do I make an intermediate data structure first? For example, if I'm given a list of points and am asked to compute the midpoint between each two neighbors, I'd usually first call:
 
-    ~~~haskell
+^
+    ```haskell
     twoWindows :: [a] -> [(a, a)]
     twoWindows [] = []
     twoWindows [x] = []
     twoWindows x:y:xs = (x, y):twoWindows xs
-    ~~~
+    ```
 
     I could just inline this logic into my definition of `f`, but I'd rather pull the abstraction out and give it a name.
 
