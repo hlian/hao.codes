@@ -75,7 +75,11 @@ Another useful global alias (assuming you use zsh):
 alias .fw='--file-watch'
 ```
 
-Usage: `stack build .fast .fw`.
+Usage:
+
+* `stack build .fast .fw`
+* `stack ghci .fast`
+* `stack install lens .fast`
 
 Another suggestion: rebind `;` to `:` in your terminal preferences. When Haskelling I never type semicolon but I sure do type colon all the time.
 
