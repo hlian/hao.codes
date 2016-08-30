@@ -3,20 +3,19 @@
 }
 
 html {
-  font-family: helvetica, arial, sans-serif;
-  font-size: 14pt;
+  font-family: -apple-system, helvetica, arial, sans-serif;
+  font-size: 13pt;
   background: #b1e4e3;
   text-rendering: optimizeLegibility;
 }
 
 body {
-  line-height: 1.4;
+  line-height: 11pt;
 }
 
 pre, code {
-  font-family: "Ubuntu Mono", "Menlo", "Consolas", monospace;
+  font-family: "Fantasque Sans Mono", "Menlo", "Consolas", monospace;
   font-size: 12pt;
-  line-height: 1.2;
 }
 
 @media (max-device-width: 1601px) {
