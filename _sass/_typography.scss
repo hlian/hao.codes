@@ -80,7 +80,7 @@ a[rev="footnote"] {
 }
 
 code {
-  border-bottom: 1px dashed #b1e4e3;
+  border-bottom: 2px dashed #b1e4e3;
 }
 
 pre {
@@ -88,7 +88,7 @@ pre {
 }
 
 pre code {
-  background: none;
+  border-bottom: 0;
 }
 
 code {
