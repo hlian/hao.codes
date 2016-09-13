@@ -1,229 +1,154 @@
-## Notes for the reader
+## Type-level API specification might be some kind of reprieve for the tired and overworked web programmer of 2016
 
-[hao is slowly importing pieces of code and text from this stack overflow answer](http://stackoverflow.com/questions/37016836/deciphering-datakind-type-promotion-in-servant-library/37020799#37020799)
+Nowhere is the excess and waste of late 2000s-to-2010s programming more evident than to stand beneath the teetering tower of "web frameworks" we have constructed for ourselves. Varying in language, size, documentation, there is no logical choice of the one best web framework for any project. In place of logic we have resorted to a kind of identity politicking, where something about framework X says something about the user who chooses to use X, and why and how she is different and odder than users of Y and Z.
 
-this piece should tackle content types before the day is gone
+I want to cast all this aside and tell you, the weary overtaxed programmer, that these frameworks are inherently wrong. These frameworks are built on a singular idea that leads them down the wrong road, making you work harder and longer than you have to when you could be with your family and your loved ones and your books and your dogs. That idea is this: _routing_.
 
-another 1500 words are needed, likely
+## Routing
 
-it should end up in 3000-4000 words
+Routing, as an approximation, is pattern matching on the HTTP request path, when a request comes in, in order to determine which function to call
 
-we need some explanation of WAI for non-Haskellers
+```ruby
+Barnacles::Application.routes.draw do
+  constraints do
+    scope :format => "html" do
+      root :to => "home#newest",
+        :protocol => "https://",
+        :as => "root"
 
-we need some sort of "hey you can read this even if you don't really know Haskell paragraph" to signal a more general audience
-
-## Type-level web programming in Haskell might be some kind of holy grail for the tired and overworked web programmer of 2016
-
-Among Haskell packages, Servant has quickly established itself as a very good framework for writing web apps. Servant, like Rails before it, is an opinionated web framework. It believes in the idea that we _can_ and we _should_ code at the type level. That _type-level programming_ is the tool by which we will end up with shorter, safer, and more robust programs. Because, as we will soon see, Servant's pushes you the programmer to declare your web service as a single type. We will attempt to spell out how this works and why it is a marvelous new idea in this blog post.
-
-A word of warning: the code snippets below are in Haskell and I will assume you have some knowledge of a modern functional programming language. However, the idea of type-level programming is broad and applicable to all practitioners of software engineering. As we go through I will try and explain the quirks of Haskell syntax where they arise, and my hope is that a curious reader with no background in Haskell could walk away with something gained from reading this unusually long blog post.
-
-Being able to represent data at the type level is something that, I confess, I am wholly enamored with. For those of us who have programmed for an unhealthy amount of time, this is somewhat of a holy grail. Though type-level programming has been around for a long time (see: Coq, released the year _Leathal Weapon 2_ came out) what is happening right now with GHC Haskell is unique. For the first time we are marrying the principles of dependently-typed functional programming languages with a production-quality runtime friendly to systems programming _and_ a healthy even thriving community of people and libraries. Something exciting is happening. This is our time. This is our _clear eyes full hearts_. So, thesis: in this blog post we will attempt to sketch how one might represent a web service, something fairly complicated and practical, at the type level and – in the process – de-mystify type-level gymnastics.
-
-## Type-level functions
-
-A simple and common kind of type-level primitive is the function. Though we often do not call it that, it is indeed possible to build type-level functions, and we tend to do it without second thought when we build algebraic data types. For example, lists:
-
-```haskell
-data [a] = [] | a:[a]
-```
-
-A list takes a type from the "usual" "universe" of types (`Int`, `Int -> Float`, `IO (Int -> Float)`, ...) and returns another type (`[Int]`, `[Int -> Float]`, `[IO (Int -> Float)]`, ...). We put these words into scare quotes to heavily signify that To abbreviate this idea, we say it has _kind_ `* -> *`.
-
-```haskell
-> :kind Int
-*
-> :kind Int -> Float
-Int -> Float :: *
-> :kind IO (Int -> Float)
-IO (Int -> Float) :: *
-> :kind []
-[] :: * -> *
-> :kind [Int]
-[Int] :: *
-```
-
-We will attempt to force ourselves to think of this as a type-level function because, as we will see, the analogy between values and types and types and kinds (an SAT analogy, for alumni of the U.S. education system) is one that will anchor us to reality as matters get hairier.
-
-So, to beat the analogy to death:
-
-* Our Lispy cons-list is a higher-order type parametrized by the element type. So it has kind `* -> *`.
-
-* When we specify the type of element kind, we reduce the arity of its kind to `*`. This is like calling a function.
-
-* A function like `\x -> x * 2` is parametrized by the number `x`. So it has type `Num a => a -> a`.
-
-* When we call the function with a number, we reduce the arity of its type to `Num a => a`.
-
-Can we explicitly construct type-level functions? Something like this, perhaps:
-
-
-```haskell
-type Pair = \a -> (a, a)
-```
-
-This, as opposed to the usual `type Pair a = (a, a)`, would truly clarify the analogy and render it vivid and beautiful. However, theory tells us that type-level lambdas result in terrible type inference. For this reason we will not find them in Haskell.
-
-## Numbers and strings
-
-As of recent GHC versions we also have natural numbers and strings. They live in the `GHC.TypeLits` module and require a `DataKinds` extension:
-
-```haskell
-> :set -XDataKinds
-> :kind "hello"
-"hello" :: GHC.TypeLits.Symbol
-> :kind 3
-3 :: GHC.TypeLits.Nat
-```
-
-Note that we have strayed outside the "usual" "universe," the kind `*`. Unlike the types we know and love in `*`, nothing inhabits these types. There is no value `x` such that `x :: Symbol` or `x :: Nat`. If you were to look up the definitions you would see:
-
-```haskell
-data Nat
-data Symbol
-```
-
-No constructors to speak of. They run, skip, and holler when we typecheck our program
-
-Prior to programming in Coq and Haskell, I thought of types as inert little creatures that were typechecked and then erased by the compiler. They were nice to have around and I adored them, but they did little outside of, as we saw above, being smushed together for function abstraction and application.
-
-Let us dispel that notion:
-
-```haskell
-> :set -XTypeOperators
-> import GHC.TypeLits
-> :browse
-type family (*) (a :: Nat) (b :: Nat) :: Nat
-type family (+) (a :: Nat) (b :: Nat) :: Nat
-type family (-) (a :: Nat) (b :: Nat) :: Nat
-type family (^) (a :: Nat) (b :: Nat) :: Nat
-[snip]
-> :kind! 3 + 3
-6 :: Nat
-> :kind! 3 ^ 3
-27 :: Nat
+      get "/rss" => "home#index", :format => "rss"
+      get "/hottest" => "home#index", :format => "json"
+      get "/hottest/page/:page" => "home#index", :format => "json"
 ```
 
 
+Routing is _also_ the act of writing down all the API URLs we want to make requests to when we go make our API client, making sure we type each one correctly and lining up all the types and arities to the API specification. Keep in mind you have to do this for each client you end up writing: one for JavaScript, one for Ruby, one for C, life is more and more meaningless, you get it.
 
-Here we see that we add, multiply, subtract, and exponentiate type-level naturals.[^ints] We can even ask the constraint solver to solve logarithms:
+```js
+function getRSS() {
+  fetch("/rss").then(function(s) {
+    return XML.parse(s);
+  });
+}
 
-```haskell
-> import Data.Proxy
-> :{ let f :: Proxy (3 ^ x) -> Proxy x;
-   |     f Proxy = Proxy
-   :}
-
-> :type f (Proxy : Proxy 27)
-f (Proxy :: Proxy 27) :: Proxy 3
-
-> f (Proxy :: Proxy 27)
-Proxy
+function getHottestPage(pageNo) {
+  assertInt(pageNo);
+  fetch("/hottest/page/" + pageNo).then(function(s) {
+    return JSON.parse(s);
+  });
+}
 ```
 
-Here we see the compiler's solving the equation `3 ^ x = 27`. We did this by convincing the compiler to solve the constraint `Proxy (3 ^ x) ~ 27`, which generates the subconstraint `3 ^ x ~ 27`, which (thanks to internal GHC smarts) results in `x ~ 3`. To drive the point home, let us find the logarithm for `28` and `3 ^ 1024 = 3733918...`.
+Now routing _also_ means writing API documentation, the act of converting beautiful code into messy English paragraphs that never seem to mean what you want them to mean. Most people, understandably, skip this part altogether.
+
+We have trapped ourselves in this hall of mirrors and like every prison it is of one of our own construction. We are operating at the wrong level of abstraction. In Rails (and frameworks like Rails) we specify our routes through a domain-specific language. That code contains all the information we need to generate our JS client or (with judicious annotation) our documentation, but it requires us to run the Ruby code. This is great for the server and terrible for everybody else.
+
+Alternately we could have the server run the routes in special modes (a "JS client" mode, a "C client" mode, a "documentation" mode) where it spits out the JS or the C or the English as an intermediate file and then serve that file. Write the code to write the code. Extend the interpreter for the routing DSL to support these modes. Implement a plugin system. Work really hard to make a small amount of people happy.
+
+But let me tell you about a third way. A story of types and functions. A story of _type-level_ programming. And let me use a smidgen of Haskell to illustrate it. An esoteric language, to be sure, but one that is concise enough and beautiful enough to warrant it. (I will try to explain line by line what is happening. I want this to be relevant to all curious readers.)
+
+## Types and their constructors
+
+Types are Legos. Out of the box the library for a typed language comes with types like `Int` and `Float` and `Char`. The functional programmer thinks for a while and then accretes these types to form bigger types. Like `type String = [Char]` (a list of characters is a string) or `type Point = (Float, Float)` (a 2D point is an X and a Y) or `type Predicate a = a -> Bool` (a filtering predicate takes something and returns a thumbs up thumbs down).
+
+These operators, `[]` and `(,)` and `->`, are type _constructors_. Not types themselves but operators we use with types to create more types. We accrete these types into larger and more complicated beasts right up until we end up with a working application. 
+
+Modern strongly-typed functional programming languages like Haskell or Scala go one step further. We can not only use the built-in constructors but also create new ones. This is what allows us to embed a domain-specific language at the _type level_. And this, along with a little elbow grease, should be enough to allow us to specify API routes.
+
+So assume for one moment that we are building a weather API. For that will need at least two new type operators: one to encode the slash (the route `weather/nyc`) and one to encode disambiguation (`weather/nyc` or `weather/paris`):
 
 ```haskell
-> :type f (Proxy :: Proxy 28)
-f (Proxy :: Proxy 28) :: ((3 ^ x) ~ 28) => Proxy x
-
-> f (Proxy :: Proxy 28)
-    Couldn't match expected type ‘28’ with actual type ‘3 ^ x0’
-    The type variable ‘x0’ is ambiguous
-    [snip]
-
-> :type f (Proxy :: Proxy 3733918487410200435329597541848665882254¶
-                          0977678373400775063693172207904061726525¶
-                          1229993688938803977220468765065431475158¶
-                          1087270545921608585813513369828091873141¶
-                          9174859426258093880701995195640428557181¶
-                          8041046681288797402925517668012340617298¶
-                          3965747316191523867230462351259348960585¶
-                          9058828465479354050593620237654780744273¶
-                          0582144527058988756251452817793413352141¶
-                          9207446230275187291854328623757370639854¶
-                          8531947641692626381997288700690701389925¶
-                          6524297198527698749274196276811060702333¶
-                          710356481)
-f (Proxy :: Proxy 3733918[snip]6481) :: Proxy 1024
-```
-
-It is perhaps this, above all else, that illustrates so clearly what we mean when we say that we can make the type checker perform work for us at compile time. We are used to the idea that types are inert little things, that either unify successfully or end up with a type error. But in GHC Haskell we see that types are considerably smarter and more cunning. They can encode functions, numbers, and strings. They can do a little math. And, as we will see, they can represent the structure of a web service.
-
-So, to recap:
-
-* We have been creating type-level functions all this time without knowing it.
-* Most day-to-day types, the types with values that inhabit them and that take part in runtime computation, have kind `*`.
-* There are other kinds besides `*`, like `Nat` (natural numbers) and `Symbol` (strings).
-* The types that inhabit `Nat` are type-level natural numbers.
-* The types that inhabit `Symbol` are type-level strings.
-
-
-
-
-## Let's build a Servant
-
-Our goals will be Servant's goals:
-
-* A design powered by type-level programming. We should (1) be able to specify the entire HTTP web service as a single type, which we call `type API` with kind `k`; (2) use this kind to Write a type-level function `ServerT` with kind `k -> *`; and (3) have the HTTP server `server` be a value of type `server :: ServerT API`.
-
-* Use real types to model resources, pushing the serialization and deserialization of high-entropy type like JSON or a bytestring to a separate layer. We do not want to see `Data.Aeson.Value` or `Data.ByteString.ByteString` in our `API` declaration.
-
-* Conform to the Web Application Interface (the `type Application = Request -> (Response -> IO ResponseReceived) -> IO ResponseReceived` type) that Haskell frameworks use, so we can take advantage of existing HTTP server libraries like `warp`. We want to avoid parsing HTTP requests and writing HTTP responses in this (already overlong) blog post.
-
-First, we will need a type-level way to link together the different endpoints of our service:
-
-```haskell
-{-# language DataKinds #-}
-{-# language PolyKinds #-}
+{-# language DataKinds     #-}
+{-# language PolyKinds     #-}
 {-# language TypeOperators #-}
 
-data head :| tail = head :| tail
+data head :> tail
+data head :| tail
 infixr 8 :|
-```
-
-With the `DataKinds` extension, we are declaring _two_ things here:
-
-* A data constructor with type `(:|) :: head -> tail -> head :| tail`
-* A type-level function with kind `(:|) :: * -> * -> *`
-
-Unfortunately they both have the same name.
-
-We will also need a way to encode URL hierarchy for each endpoint:
-
-```haskell
-data parent :/ children =
-  Slash children
 infixr 9 :/
-```
 
-Altogether:
-
-We should now be able to write a rudimentary service for a web service with the following endpoints:
-
-* `GET /time`, which returns the UTC time
-* `GET /about`, which returns a static string
-
-```haskell
-import Data.Time
+data Weather =
+  Weather { highTemp :: Float
+          , lowTemp :: Float
+          , sunny :: Bool
+          }
 
 data GET a
 
 type API =
-     "time" :> GET UTCTime
-  :| "about" :> GET String
+  "weather" :> GET [Weather]
+            :> ("nyc" :> GET Weather
+                "paris" :> GET Weather
+                "atlantis" :> GET Weather)
 ```
 
-While this is a fairly good encoding of our HTTP service, it suffers from a big problem. Nobody knows how to convert `API` into an `Application`. To do so, we'll need to:
+In our API specification, we have four endpoints:
 
-* Pattern-match on `:|`, using the request path from the HTTP request to determine which branch to go down
-* Pattern-match on `:/`, consuming the request path as we go along
-* Throw a 404 should routing fail
-* Convert `API` into an `Application`
+* `GET /weather` will return weather from all cities as a list of weather objects. We will soon see how to translate this into a serialization format (like the oh-so-popular JSON).
 
-This is a substantial about of type-level computation to do. If this were at the value level, we could `case`-match on `:|` and `:/`. For types we will have to turn to a surprising friend – typeclasses. Typeclasses, designed to be a safe way to write generic functions that act over an open set of types, turn out to be the analog to pattern matching at the type level. The secret is that typeclasses are a fantastic way of generating constraints. As we saw above, from playing around with logarithms, we can use the constraint solver to decompose types.
+* `GET /weather/<city>` will return the weather specific to city as a single weather object, as long as the city is either NYC or Paris or _the lost city_.
 
-For instance, this typeclass will take the type of an API and generate a WAI Application.
+These first three lines
+
+```haskell
+{-# language DataKinds     #-}
+{-# language PolyKinds     #-}
+{-# language TypeOperators #-}
+```
+
+enable compiler-specific extensions to the Haskell language (the compiler being [GHC](ghc)). `DataKinds` lets us use strings as a type, which has all sorts of fascinating implications that you should go out and read about. `PolyKinds` pushes the compiler to infer the correct _kind_ for `type API`, "kind" being the in-word for "the type of a type." `TypeOperators` is a syntactic extension that lets us conjure up new infix operators `:>` and `:|`.
+
+```haskell
+data head :> tail
+data head :| tail
+infixr 8 :|
+infixr 9 :/
+```
+
+Here `data` is a terribly-named keyword that declares `:>` and `:|` to be two new type constructors, each taking two arguments. And, for lack of a better vocabulary, I called them a head and a tail. They are assigned the right operator precedences so we can avoid writing parentheses unnecessarily.
+
+```haskell
+data Weather =
+  Weather { highTemp :: Float
+          , lowTemp :: Float
+          , sunny :: Bool
+          }
+```
+
+This defines our `Weather` type to be a three-tuple of a high temp, a low temp, and a sunniness flag. This naturally translates to a JSON object with three fields, but that will come later.
+
+```haskell
+data GET a
+
+type API =
+  "weather" :> GET [Weather]
+            :> ("nyc" :> GET Weather
+                :| "paris" :> GET Weather
+                :| "atlantis" :> GET Weather)
+```
+
+Finally our type. This uses our type constructor and our weather type and the list constructor to form a quasi-tree structure. At this present moment this type is completely inert. It neither lets us implement a server nor does it generate the JS code we want. The problem is that we have given ourselves a diction and a syntax but no semantics. To attach meaning to `:>` or `:|` we will have to turn to _typeclasses_.
+
+## Typeclasses
+
+To write an HTTP server 
+
+Here we are going to ratchet up the Haskell factor a little. A typeclass is a relatively new innovation in the programming-language world that lets us write safe, generic code that works over many types.
+
+```haskell
+{-# language OverloadedStrings #-}
+{-# language TypeFamilies      #-}
+
+import qualified Network.HTTP.Types as HTTP
+import qualified Network.Wai as WAI
+
+class ToApplication api where
+  type Server api
+  server :: Proxy api -> Server api -> WAI.Application
+```
+
+
+
 
 ```haskell
 {-# language OverloadedStrings #-}
@@ -525,3 +450,214 @@ I think what characterizes HTTP work, above all other work, is the amount of pap
 
 
 From what little I remember of high-school Advanced Placement Physics AB, I believe every HTTP service is a sort of thermodynamic cycle – some machine that takes in a smattering of URL query parameters and JSON (low-entropy data), deserializes it into data structures complected with business logic and software architecture (high entropy), does work, and serializes the work as the response (low entropy, once more).
+
+Among Haskell packages, Servant has quickly established itself as a very good framework for writing web apps. Servant, like Rails before it, is an opinionated web framework. It believes in the idea that we _can_ and we _should_ code at the type level. That _type-level programming_ is the tool by which we will end up with shorter, safer, and more robust programs. Because, as we will soon see, Servant's pushes you the programmer to declare your web service as a single type. We will attempt to spell out how this works and why it is a marvelous new idea in this blog post.
+
+A word of warning: the code snippets below are in Haskell and I will assume you have some knowledge of a modern functional programming language. However, the idea of type-level programming is broad and applicable to all practitioners of software engineering. As we go through I will try and explain the quirks of Haskell syntax where they arise, and my hope is that a curious reader with no background in Haskell could walk away with something gained from reading this unusually long blog post.
+
+Being able to represent data at the type level is something that, I confess, I am wholly enamored with. For those of us who have programmed for an unhealthy amount of time, this is somewhat of a holy grail. Though type-level programming has been around for a long time (see: Coq, released the year _Lethal Weapon 2_ came out) what is happening right now with GHC Haskell is unique. For the first time we are marrying the principles of dependently-typed functional programming languages with a production-quality runtime friendly to systems programming _and_ a healthy even thriving community of people and libraries. Something exciting is happening. This is our time. This is our _clear eyes full hearts_. So, thesis: in this blog post we will attempt to sketch how one might represent a web service, something fairly complicated and practical, at the type level and – in the process – de-mystify type-level gymnastics.
+
+## Type-level functions
+
+A simple and common kind of type-level primitive is the function. Though we often do not call it that, it is indeed possible to build type-level functions, and we tend to do it without second thought when we build algebraic data types. For example, lists:
+
+```haskell
+data [a] = [] | a:[a]
+```
+
+A list takes a type from the "usual" "universe" of types (`Int`, `Int -> Float`, `IO (Int -> Float)`, ...) and returns another type (`[Int]`, `[Int -> Float]`, `[IO (Int -> Float)]`, ...). We put these words into scare quotes to heavily signify that To abbreviate this idea, we say it has _kind_ `* -> *`.
+
+```haskell
+> :kind Int
+*
+> :kind Int -> Float
+Int -> Float :: *
+> :kind IO (Int -> Float)
+IO (Int -> Float) :: *
+> :kind []
+[] :: * -> *
+> :kind [Int]
+[Int] :: *
+```
+
+We will attempt to force ourselves to think of this as a type-level function because, as we will see, the analogy between values and types and types and kinds (an SAT analogy, for alumni of the U.S. education system) is one that will anchor us to reality as matters get hairier.
+
+So, to beat the analogy to death:
+
+* Our Lispy cons-list is a higher-order type parametrized by the element type. So it has kind `* -> *`.
+
+* When we specify the type of element kind, we reduce the arity of its kind to `*`. This is like calling a function.
+
+* A function like `\x -> x * 2` is parametrized by the number `x`. So it has type `Num a => a -> a`.
+
+* When we call the function with a number, we reduce the arity of its type to `Num a => a`.
+
+Can we explicitly construct type-level functions? Something like this, perhaps:
+
+
+```haskell
+type Pair = \a -> (a, a)
+```
+
+This, as opposed to the usual `type Pair a = (a, a)`, would truly clarify the analogy and render it vivid and beautiful. However, theory tells us that type-level lambdas result in terrible type inference. For this reason we will not find them in Haskell.
+
+## Numbers and strings
+
+As of recent GHC versions we also have natural numbers and strings. They live in the `GHC.TypeLits` module and require a `DataKinds` extension:
+
+```haskell
+> :set -XDataKinds
+> :kind "hello"
+"hello" :: GHC.TypeLits.Symbol
+> :kind 3
+3 :: GHC.TypeLits.Nat
+```
+
+Note that we have strayed outside the "usual" "universe," the kind `*`. Unlike the types we know and love in `*`, nothing inhabits these types. There is no value `x` such that `x :: Symbol` or `x :: Nat`. If you were to look up the definitions you would see:
+
+```haskell
+data Nat
+data Symbol
+```
+
+No constructors to speak of. They run, skip, and holler when we typecheck our program
+
+Prior to programming in Coq and Haskell, I thought of types as inert little creatures that were typechecked and then erased by the compiler. They were nice to have around and I adored them, but they did little outside of, as we saw above, being smushed together for function abstraction and application.
+
+Let us dispel that notion:
+
+```haskell
+> :set -XTypeOperators
+> import GHC.TypeLits
+> :browse
+type family (*) (a :: Nat) (b :: Nat) :: Nat
+type family (+) (a :: Nat) (b :: Nat) :: Nat
+type family (-) (a :: Nat) (b :: Nat) :: Nat
+type family (^) (a :: Nat) (b :: Nat) :: Nat
+[snip]
+> :kind! 3 + 3
+6 :: Nat
+> :kind! 3 ^ 3
+27 :: Nat
+```
+
+
+
+Here we see that we add, multiply, subtract, and exponentiate type-level naturals.[^ints] We can even ask the constraint solver to solve logarithms:
+
+```haskell
+> import Data.Proxy
+> :{ let f :: Proxy (3 ^ x) -> Proxy x;
+   |     f Proxy = Proxy
+   :}
+
+> :type f (Proxy : Proxy 27)
+f (Proxy :: Proxy 27) :: Proxy 3
+
+> f (Proxy :: Proxy 27)
+Proxy
+```
+
+Here we see the compiler's solving the equation `3 ^ x = 27`. We did this by convincing the compiler to solve the constraint `Proxy (3 ^ x) ~ 27`, which generates the subconstraint `3 ^ x ~ 27`, which (thanks to internal GHC smarts) results in `x ~ 3`. To drive the point home, let us find the logarithm for `28` and `3 ^ 1024 = 3733918...`.
+
+```haskell
+> :type f (Proxy :: Proxy 28)
+f (Proxy :: Proxy 28) :: ((3 ^ x) ~ 28) => Proxy x
+
+> f (Proxy :: Proxy 28)
+    Couldn't match expected type ‘28’ with actual type ‘3 ^ x0’
+    The type variable ‘x0’ is ambiguous
+    [snip]
+
+> :type f (Proxy :: Proxy 3733918487410200435329597541848665882254¶
+                          0977678373400775063693172207904061726525¶
+                          1229993688938803977220468765065431475158¶
+                          1087270545921608585813513369828091873141¶
+                          9174859426258093880701995195640428557181¶
+                          8041046681288797402925517668012340617298¶
+                          3965747316191523867230462351259348960585¶
+                          9058828465479354050593620237654780744273¶
+                          0582144527058988756251452817793413352141¶
+                          9207446230275187291854328623757370639854¶
+                          8531947641692626381997288700690701389925¶
+                          6524297198527698749274196276811060702333¶
+                          710356481)
+f (Proxy :: Proxy 3733918[snip]6481) :: Proxy 1024
+```
+
+It is perhaps this, above all else, that illustrates so clearly what we mean when we say that we can make the type checker perform work for us at compile time. We are used to the idea that types are inert little things, that either unify successfully or end up with a type error. But in GHC Haskell we see that types are considerably smarter and more cunning. They can encode functions, numbers, and strings. They can do a little math. And, as we will see, they can represent the structure of a web service.
+
+So, to recap:
+
+* We have been creating type-level functions all this time without knowing it.
+* Most day-to-day types, the types with values that inhabit them and that take part in runtime computation, have kind `*`.
+* There are other kinds besides `*`, like `Nat` (natural numbers) and `Symbol` (strings).
+* The types that inhabit `Nat` are type-level natural numbers.
+* The types that inhabit `Symbol` are type-level strings.
+
+
+
+
+## Let's build a Servant
+
+Our goals will be Servant's goals:
+
+* A design powered by type-level programming. We should (1) be able to specify the entire HTTP web service as a single type, which we call `type API` with kind `k`; (2) use this kind to Write a type-level function `ServerT` with kind `k -> *`; and (3) have the HTTP server `server` be a value of type `server :: ServerT API`.
+
+* Use real types to model resources, pushing the serialization and deserialization of high-entropy type like JSON or a bytestring to a separate layer. We do not want to see `Data.Aeson.Value` or `Data.ByteString.ByteString` in our `API` declaration.
+
+* Conform to the Web Application Interface (the `type Application = Request -> (Response -> IO ResponseReceived) -> IO ResponseReceived` type) that Haskell frameworks use, so we can take advantage of existing HTTP server libraries like `warp`. We want to avoid parsing HTTP requests and writing HTTP responses in this (already overlong) blog post.
+
+First, we will need a type-level way to link together the different endpoints of our service:
+
+```haskell
+{-# language DataKinds #-}
+{-# language PolyKinds #-}
+{-# language TypeOperators #-}
+
+data head :| tail = head :| tail
+infixr 8 :|
+```
+
+With the `DataKinds` extension, we are declaring _two_ things here:
+
+* A data constructor with type `(:|) :: head -> tail -> head :| tail`
+* A type-level function with kind `(:|) :: * -> * -> *`
+
+Unfortunately they both have the same name.
+
+We will also need a way to encode URL hierarchy for each endpoint:
+
+```haskell
+data parent :/ children =
+  Slash children
+infixr 9 :/
+```
+
+Altogether:
+
+We should now be able to write a rudimentary service for a web service with the following endpoints:
+
+* `GET /time`, which returns the UTC time
+* `GET /about`, which returns a static string
+
+```haskell
+import Data.Time
+
+data GET a
+
+type API =
+     "time" :> GET UTCTime
+  :| "about" :> GET String
+```
+
+While this is a fairly good encoding of our HTTP service, it suffers from a big problem. Nobody knows how to convert `API` into an `Application`. To do so, we'll need to:
+
+* Pattern-match on `:|`, using the request path from the HTTP request to determine which branch to go down
+* Pattern-match on `:/`, consuming the request path as we go along
+* Throw a 404 should routing fail
+* Convert `API` into an `Application`
+
+This is a substantial about of type-level computation to do. If this were at the value level, we could `case`-match on `:|` and `:/`. For types we will have to turn to a surprising friend – typeclasses. Typeclasses, designed to be a safe way to write generic functions that act over an open set of types, turn out to be the analog to pattern matching at the type level. The secret is that typeclasses are a fantastic way of generating constraints. As we saw above, from playing around with logarithms, we can use the constraint solver to decompose types.
+
+For instance, this typeclass will take the type of an API and generate a WAI Application.
