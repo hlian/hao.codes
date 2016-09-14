@@ -1,12 +1,12 @@
 ## Type-level API specification might be some kind of reprieve for the tired and overworked web programmer of 2016
 
-Nowhere is the excess and waste of late 2000s-to-2010s programming more evident than to stand beneath the teetering tower of "web frameworks" we have constructed for ourselves. Varying in language, size, documentation, there is no logical choice of the one best web framework for any project. In place of logic we have resorted to a kind of identity politicking, where something about framework X says something about the user who chooses to use X, and why and how she is different and odder than users of Y and Z.
+Nowhere is the excess of late 2000s-to-2010s programming more evident than the moment when you are asked to scroll through and pick a web framework framework out of a list. Varying in language, size, and culture, there is no logical process you could come up with that would help you pick the one best web framework for any project. Instead the programming community has resorted to a kind of identity politicking: using framework X says something about you and thank goodness because someone who wouldn't use framework X would be extremely Y and Z.
 
-I want to cast all this aside and tell you, the weary overtaxed programmer, that these frameworks are inherently wrong. These frameworks are built on a singular idea that leads them down the wrong road, making you work harder and longer than you have to when you could be with your family and your loved ones and your books and your dogs. That idea is this: _routing_.
+I want to cast all this aside and tell you, the weary web programmer, no matter what choice you make you will have made the wrong one. That these frameworks are built on a singular idea that leads them down the wrong road, making you work harder and longer than you have to when you could be with your loved ones. That most of these frameworks (but not all!) have cut corners – accepting received wisdom when it is in fact of received foolhardiness – on one of the most important, most fundamental parts of figuring out how to write a web service: _routing_.
 
 ## Routing
 
-Routing, as an approximation, is pattern matching on the HTTP request path, when a request comes in, in order to determine which function to call
+Defining routing is tricky. Routing is many things, but the first one that comes to mind probably the idea of playing traffic cop to the HTTP request path. When a request comes in, we have to determine which function to call. Most frameworks let you declare the hierarchy of routes at runtime, whether through an embedded domain-specific language or something similar. Here as our canonical example is the first couple of lines for a Rails app trying to route a reddit-like online community website:
 
 ```ruby
 Barnacles::Application.routes.draw do
@@ -21,8 +21,7 @@ Barnacles::Application.routes.draw do
       get "/hottest/page/:page" => "home#index", :format => "json"
 ```
 
-
-Routing is _also_ the act of writing down all the API URLs we want to make requests to when we go make our API client, making sure we type each one correctly and lining up all the types and arities to the API specification. Keep in mind you have to do this for each client you end up writing: one for JavaScript, one for Ruby, one for C, life is more and more meaningless, you get it.
+But wait that's not all. The dual side of routing happens on the client side, where you the tired programmer must transcribe all the API URLs the moment you go write the API client, making sure each one is spelled correctly and all the types and preconditions are lined up. Keep in mind you have to do this for each client you end up writing: one for JavaScript on the browser, one for the Ruby gem you want to write, and so forth. This is the kind of Sisyphaen work that produces a high ringing note in your ear and introduces distance between you and your significant other.
 
 ```js
 function getRSS() {
@@ -39,13 +38,15 @@ function getHottestPage(pageNo) {
 }
 ```
 
-Now routing _also_ means writing API documentation, the act of converting beautiful code into messy English paragraphs that never seem to mean what you want them to mean. Most people, understandably, skip this part altogether.
+At some point you will _also_ have to copy down the routes in your application into your API documentation, the act of converting beautiful code into messy paragraphs that never seem to mean what you want them to mean. Most people, understandably, skip this part altogether. I would argue this is a _third_ kind of routing: the hierarchy of your web service has been rendered into server-side code, and it has been rendered into client-side code, and now it is being rendered into English.
 
-We have trapped ourselves in this hall of mirrors and like every prison it is of one of our own construction. We are operating at the wrong level of abstraction. In Rails (and frameworks like Rails) we specify our routes through a domain-specific language. That code contains all the information we need to generate our JS client or (with judicious annotation) our documentation, but it requires us to run the Ruby code. This is great for the server and terrible for everybody else.
+We have imprisoned ourselves in this hall of mirrors and like every prison it is of one of our own construction. It seems to me that we are operating at the wrong level of abstraction. In Rails (and similar frameworks) we choose to specify our routes through runtime code. That code, and the in-memory data structures it builds, contains all sorts of information that we need access to and that we then duplicate on the client side and in the documentation. But it is inherently locked up on the server.
 
-Alternately we could have the server run the routes in special modes (a "JS client" mode, a "C client" mode, a "documentation" mode) where it spits out the JS or the C or the English as an intermediate file and then serve that file. Write the code to write the code. Extend the interpreter for the routing DSL to support these modes. Implement a plugin system. Work really hard to make a small amount of people happy.
+We could instead have the server run the routes in special modes, where for example Rails spits out a JS client in the "JS client mode" or English documentation in the "documentation mode." Write the code to write the code, if you will. Extend the interpreter for the routing DSL to support these modes. Implement a plugin system. Work really hard to make a small amount of people happy. But this then shifts the burden to the people working on the framework by dramatically expanding the scope of what the routing library should look like.
 
-But let me tell you about a third way. A story of types and functions. A story of _type-level_ programming. And let me use a smidgen of Haskell to illustrate it. An esoteric language, to be sure, but one that is concise enough and beautiful enough to warrant it. (I will try to explain line by line what is happening. I want this to be relevant to all curious readers.)
+It would be nice if we had some sort of intermediate language, a halfway point between the time we write down the routes in a module and the time that code is executed to trun the server.
+
+So let me tell you about a third way. A story of types and functions. A story of _type-level_ programming. And let me use a smidgen of Haskell to illustrate it. An esoteric language, to be sure, but one that is concise enough and beautiful enough to warrant it. (I will try to explain line by line what is happening. I want this to be relevant to all curious readers.)
 
 ## Types and their constructors
 
