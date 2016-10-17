@@ -6,18 +6,25 @@ layout: default
   <img src="{{ "/static/whisk.png" | prepend: site.baseurl}}" height="32px" width="32px" alt="whisk">
 </p>
 
-<h1>{{ site.title }}</h1>
+<div class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a href="{{ site.posts[0].url | prepend: site.baseurl }}">{{ site.posts[0].title }}</a></h1>
+    <p class="post-meta">{{ site.posts[0].date | date: "%Y %b %d" }}</p>
+  </header>
 
-<p>
-  by
-  {% for author in site.data.people %}
-  <a href="{{ site.baseurl }}/people/{{ author[0] }}">{{ author[1].name }}</a>
-  {% endfor %}
-</p>
+  <article class="post-content">
+    {{ site.posts[0].content }}
+  </article>
+</div>
 
+<center style="margin-top: 3rem">
+  ~
+</center>
+
+<h2>Older posts</h2>
 <ul>
 {% for post in site.posts %}
-  {% unless post.title contains 'poopmonster' %}
+  {% unless post.title contains 'poopmonster' or forloop.first %}
   <li>
     <p>
       <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a><br>
@@ -29,5 +36,5 @@ layout: default
 </ul>
 
 
-<p><a href="{{ "/feed.xml" | prepend: site.baseurl }}">Subscribe to the RSS feed</a> or <a href="https://twitter.com/spokeproof">follow @spokeproof on Twitter</a>. Both are sexy and fun choices.</p>
-
+<h2>Colophon</h2>
+<p><em>Spoke Proof</em> is by Hao Lian. If you like what you read, <a href="{{ "/feed.xml" | prepend: site.baseurl }}">subscribe to new posts via RSS</a> or <a href="https://twitter.com/spokeproof">follow @spokeproof on Twitter</a>.</p>

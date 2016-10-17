@@ -18,7 +18,7 @@ pre, code {
   font-size: 12pt;
 }
 
-@media (max-device-width: 1601px) {
+@media (max-width: 667px) {
   html, pre {
     /* Justification: your face is closer to the device? */
     font-size: 11pt;
@@ -27,12 +27,20 @@ pre, code {
   pre, code {
     font-size: 10pt;
   }
+
+  .sidebar {
+    display: none;
+  }
 }
 
-@media (max-device-width: 801px) {
+@media (max-width: 801px) {
   html, pre {
     /* Justification: your face is closer to the device? */
     font-size: 10pt;
+  }
+
+  .sidebar {
+    display: none;
   }
 }
 
@@ -40,7 +48,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
 
-.post h2 {
+.post-content h2 {
   border-bottom: 1px dashed black;
   padding-bottom: 5px;
 }
@@ -84,7 +92,7 @@ code {
 }
 
 pre {
-  border-left: 5px solid #b1e4e3;
+  border-left: 2px solid #b1e4e3;
 }
 
 pre code {

@@ -6,6 +6,9 @@ markdown:
   kramdown
 highlighter:
   rouge
+kramdown:
+  syntax_highlighter: rouge
+  input: GFM
 safe:
   true
 lsi:
@@ -13,4 +16,6 @@ lsi:
 permalink:
   /:title.html
 description:
-  "Spoke Proof: diary of a computer whisperer"
+  "Spoke Proof by Hao Lian"
+version:
+  0

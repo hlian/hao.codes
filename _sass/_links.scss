@@ -1,4 +1,4 @@
-a {
+.wrapper a {
     color: #a6192e;
     text-decoration: none;
     background-image:
@@ -30,10 +30,19 @@ a {
         0 97%;
 }
 
-a:hover, a:focus {
+.wrapper {
+  a:hover, a:focus {
     color: red;
     background-image:
         linear-gradient(#fcfbfc, #fcfbfc),
         linear-gradient(#fcfbfc, #fcfbfc),
         linear-gradient(red, red);
+  }
+}
+
+aside a {
+  color: darkblue;
+  &:hover {
+    background: lime;
+  }
 }

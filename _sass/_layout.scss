@@ -1,12 +1,17 @@
-body {
-  padding: 1rem 20px;
+.page-content {
+  padding: 1rem 0;
   max-width: 80ex;
   margin-left: 2.5%;
   background: white;
 }
 
-p, ul, ol, pre {
-  margin: 1rem 0;
+.wrapper {
+  margin: 0 20px;
+}
+
+p, ul, ol, .highlighter-rouge {
+  margin: 0;
+  margin-bottom: 1rem;
 }
 
 li > p {
@@ -17,8 +22,12 @@ ul, ol {
   margin-left: 1em;
 }
 
+h1 {
+  margin-bottom: 0.5rem;
+}
+
 h2, h3, h4, h5, h6 {
-  margin-top: 1.5rem;
+  margin-top: 3rem;
   margin-bottom: 0.5rem;
 }
 
@@ -28,7 +37,6 @@ li {
 
 pre {
   padding: 0 2%;
-
 }
 
 div.footnotes {
@@ -43,4 +51,16 @@ div.footnotes hr {
   height: 1px;
   border: 0;
   border-top: 1px solid #333;
+}
+
+.sidebar {
+  position: relative;
+  float: right;
+  right: -17rem;
+  width: 15rem;
+  margin-left: -15rem;
+  margin-top: 3rem;
+  filter: drop-shadow(1.5px 1.5px 1px #9cc);
+  opacity: 0.8;
+  font-size: 0.8rem;
 }
