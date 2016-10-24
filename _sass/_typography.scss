@@ -21,11 +21,11 @@ pre, code {
 @media (max-width: 667px) {
   html, pre {
     /* Justification: your face is closer to the device? */
-    font-size: 11pt;
+    font-size: 10pt;
   }
 
   pre, code {
-    font-size: 10pt;
+    font-size: 8pt;
   }
 
   .sidebar {
@@ -36,6 +36,10 @@ pre, code {
 @media (max-width: 801px) {
   html, pre {
     /* Justification: your face is closer to the device? */
+    font-size: 11pt;
+  }
+
+  pre, code {
     font-size: 10pt;
   }
 
