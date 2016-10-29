@@ -170,19 +170,21 @@ I would say avoid them unless you really know what you're doing. I say this as s
 
 ## Lazy IO?
 
->  This is an active field of development!
-
 Lazy IO causes more heartache with resource management and error handling than you would expect. Try [pipes](https://hackage.haskell.org/package/pipes/docs/Pipes-Tutorial.html) or [conduit](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview) instead, which lets you build out streaming data pipelines without leaking file handles or badly handling IO errors. Unfortunately they're both a little hard to use.
+
+## OpenGL
+
+> This is an active field of development!
+
+The most comprehensive and well-organized OpenGL library for Haskell is [gl](https://github.com/ekmett/gl) by Edward Kmett. How it works is elegant: it downloads the OpenGL specification into a `gl.xml` file and then it produces a Haskell library from that XML file. Code that writes code. Its documentation is poor, however; for a tutorial see [the primer on _Wright Access_](http://dpwright.com/posts/2015/03/25/the-haskell-gl-package/). For toy examples, see [ekmett/quine](https://github.com/ekmett/quine). Unfortunately the graphics story for Haskell is not quite all there yet.
 
 ## Lenses
 
->  This is an active field of development!
-
 You're going to keep hearing about lenses because the lens package has achieved remarkable success in the past couple of years, both in terms of creativity and popularity. [This series of blog posts](http://artyom.me/lens-over-tea-1) takes the time to explain and derive lenses. Lenses tutorials have the same problem as monad tutorials. The reason lenses and monads exist is long-time Haskellers all noticed the same problem, and a lot of (abstract) thought went into thinking of a solution. The original sin of lenses is functionally updating a complicated data structure. The solution is ... complicated.
 
-Some lens insights:
+Some lens tips and tricks:
 
-* Prisms, getters, setters, traversals, and uppercase-L `Lens` in the lens package all compose with `.` It all typechecks and type-inferences. This seems like it was easy to get right but it _wasn't_ and that's the secret genius of the lens package. _Against all odds, they got all this stuff working with `.`._
+* Prisms, getters, setters, traversals, and uppercase-L `Lens` in the lens package all compose with `.` It all typechecks and type-inferences. This seems simple but it _isn't_. It is one of those inventions, like Isaac Newton's catflap, that does the magic of rendering the blindingly simple into existence. And that's the secret genius of the lens package: _against all odds, they got all the optics to compose with with `.`._ (Aside: It is impossible in most other languages as it takes advantage of two unique Haskell features, rank-_n_ polymorphism and typeclasses.)
 
 * If you compose a bunch of lens together, you get back the lowest common denominator on [this UML diagram](https://hackage.haskell.org/package/lens). So composing a setter with anything automatically makes it the result a setter. And you can't compose a setter with a getter – you need a `Lens`. And a `Lens` composed with a traversal is always a traversal. And only compositions of isomorphisms will yield an isomoprhism. _Against all odds, they got all this UML diagram to work exactly as you think it would._
 
