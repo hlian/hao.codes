@@ -76,7 +76,7 @@ denominator), at least for anything serious.
 
 ## Unicode, our close friend
 
-The other, more worrying takeaway, is that Aeson rejects these two
+The other, more worrying, takeaway is that Aeson rejects these two
 otherwise-valid inputs:
 
 * <code><u>FFFE</u>[<u>00</u>"<u>00E900</u>"<u>00</u>]<u>00</u></code>
