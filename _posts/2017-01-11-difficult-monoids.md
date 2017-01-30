@@ -1,51 +1,60 @@
 ---
 layout: post
 
-title: "Monoids of difficult things poopmonster"
+title: "Less obvious monoids poopmonster"
 author: hao
 ---
 
-To the oft-asked question "What are monads?" we answer: monads are a
-monoid in the category of endofunctors. Glib though the answer may be,
-this answer says something about the elegance and success of monoids –
-that monoids are everywhere and that, when we notice one, we should
-take the time to marvel and appreciate them.
+"Monads are a monoid in the category of endofunctors," a joke first attributed to [James Iry](iry), though the idea almost certainly predates him. Glib though it may be, this answer says something about the success of monoids – a simple mathematical structure with closure, identity, and associativity that appears seemingly everywhere. When we notice a monoid, we should take the time to marvel and appreciate them.
 
-So, if we are to take this answer seriously, we should slowly unpack
-it. In the span of a dozen or so words we are making several
-assumptions and errors.
+A note: when we bring category theory to Haskell we do so loosely. We hand-wave problems like bottom, laziness, and equality. We use category theory as a way build better programs, leaving the rigor to mathematicians who are free from the tyranny of pull requests and project deadlines. It is a kindness that imperfect languages exist like Haskell that let us encode abstractions at this high a level.
 
-[iry]: http://james-iry.blogspot.com/2009/05/brief-incomplete-and-mostly-wrong.html
+## Hask
 
-We should mention something up top: You can learn a great deal of
-Haskell without ever having to understand category theory, this
-sentence, or anything in I'm about to say.
+Let **Hask** be a category formed from Haskell types of kind `*`. In true category-theoretical form, we name it in boldface and phlegmatically drop a handful of letters. A category has objects and morphisms.
 
-There is a great deal of looseness when we bring category theory to
-Haskell. We tend to hand-wave problems like unchecked exceptions,
-infinite loops, laziness, and equality. We would rather use category
-theory here as a metaphor to help us understand Haskell programs,
-knowing that these results would never pass scrutiny and only describe
-an imaginary subset of Haskell where everything cleanly fits together
-and nothing useful is ever accomplished.
+* Each object **Hask** is type in the kind `\*`. This is the normal kind where most of our datatypes and functions live. Unless you have imported `GHC.TypeLits` or turned on `DataKinds` you are probably working inside `*`. Here are some example objects: `3 :: Int`, `double :: Int -> Int`, `double 3 :: Int`.
+
+* Each morphism between two objects `A, B` is a function (a value, not a type) of type `f :: A -> B`. Each possible function is a morphism in the category.
+
+As [pigworker points out][pw], this is not the only category we can form from Haskell programming. It is unlucky that we have blessed it with the name **Hask**.
+
+Something that never gets pointed out but I think is true: the kind restriction of `*` rules out many normal Haskell types, such as `Maybe :: * -> *`.
+It means functions like `safeHead :: forall a. [a] -> Maybe a` cannot be found as a morphism in this category. However something like `safeHead @Int :: [Int] -> Maybe Int` (a wild `-XTypeApplication` appears) would be a morphism, from object `[Int] :: *` to object `Maybe Int :: *`.
+It is possible that this is an incorrect explanation of **Hask**.
+I had a great deal of difficulty tracking down a source for how to construct **Hask**, but let us work with what we have for now.
+
+[pw]: http://stackoverflow.com/a/37368282/3963
 
 ## [Hask, Hask]
 
-**Hask** is a category formed from Haskell types. In typical category
-theory form, we name it with a boldface abbreviation. Each object
-**Hask** is Haskell type of kind `*`; each morphism between two types
-`A, B` is a function `f :: A -> B`. Note that functions are both
-objects and morphisms. Confusing, but not illegal.
+Now we complicate.
 
 We can build another category out of this one: the functor category
-**[Hask, Hask]**. Each object is a type with kind `* -> *`; two
-examples are given below. Additionally each object should obey
-_functor laws_: these say that there should be a way to lift morphisms
-from `Hask` into `[Hask, Hask]` (not unlike `fmap :: (a -> b) -> (f a
--> f b)`) and that this mechanism should obey some rules about
-identity. Since we are Haskell programmers we can think of this by
-analogy to the `Functor` type class: each `f :: * -> *` should have a
-lawful `Functor` instance.
+**[Hask, Hask]**. This will strongly correspond to our notion of `Functor`::
+
+    class Functor f where
+      fmap :: (a -> b) -> (f a -> f b)
+
+Note that `f` here must have kind `* -> *`.
+
+Let us construct **[Hask, Hask]** as a category:
+
+* Each object in **[Hask, Hask]** is a type with kind `* -> *`.
+
+* Each morphism between objects `f, g :: * -> *` is a function (avaluenotatype) with type `newtype f :~> g = forall a. f a -> g a`. Each possible function with this type appears as a morphism. We sometimes call this a "natural transformation," to sound cool. Natural transformations have [more structure][ms] than I am letting on but we will skip over them with dancerly aplomb.
+
+[ms]: https://ncatlab.org/nlab/show/natural+transformation
+
+To make this category a functor category we must also constrain each object in **[Hask, Hask]** to be a _functor_. In Haskell-land a functor `F` here is a type `F :: * -> *` (like `Maybe` or `[]`) that obeys functor laws:
+
+* We should be able to lift objects from **Hask** into `F(Hask)` e.g. lifting `Int` to `Maybe Int` or `[Int]`.
+
+* We should be able to lift morphisms from **Hask** into `F(Hask)` e.g. lifting `double :: Int -> Int` into `fmap double :: Maybe Int -> Maybe Int` or `fmap double :: [Int] -> [Int]`.
+
+* The identity morphism in **Hask** must be the identity morphism in **[Hask, Hask]** i.e. `fmap id = id`
+
+* Morphisms that compose in **Hask** should continue to compose in **[Hask, Hask]** i.e. `fmap (p . q) = fmap p . fmap q`.
 
 Examples of objects in this functor category, all of which [we have seen before][me]:
 
@@ -57,16 +66,13 @@ Examples of objects in this functor category, all of which [we have seen before]
 
 * `List :: * -> *` in `data List a = Nil | Cons a (List a)`
 
-Each morphisms between two objects in **[Hask, Hask]** is a natural
-transformation; we will not worry too much about what they are.[^nat]
-
 ## A wild monoid in [Hask, Hask] appears
 
 We can equip this endofunctor category with a bifunctor `data Compose
 f g a = Compose (f (g a))`.
 
 A bifunctor is like `Functor` with kind `* -> * -> *` instead. Like
-`Functor`, it can lift morphisms from `Hask` (`bimap :: (a -> a') ->
+`Functor`, it can lift morphisms from **Hask** (`bimap :: (a -> a') ->
 (b -> b') -> f a b -> f a' b'`) and has laws about identity. I refer
 you to the [`Bifunctor` typeclass][bitc] for more details.
 
