@@ -22,18 +22,14 @@ layout: default
 </center>
 
 <h2>Older posts</h2>
-<ul>
 {% for post in site.posts %}
   {% unless post.title contains 'poopmonster' or forloop.first %}
-  <li>
     <p>
-      <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a><br>
-      <span class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</span>
+      <span class="post-meta" style="padding-right: 10px">{{ post.date | date: "%Y %m %d" }}</span>
+      <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
     </p>
-  </li>
   {% endunless %}
 {% endfor %}
-</ul>
 
 
 <h2>Colophon</h2>
