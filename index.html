@@ -17,11 +17,10 @@ layout: default
   </article>
 </div>
 
-<center style="margin-top: 3rem">
-  ~
+<center style="margin: 3rem 0; font-size: 2.5rem; color: #ddd" class="fleuron">
+  ❦
 </center>
 
-<h2>Older posts</h2>
 {% for post in site.posts %}
   {% unless post.title contains 'poopmonster' or forloop.first %}
     <p>
@@ -32,5 +31,5 @@ layout: default
 {% endfor %}
 
 
-<h2>Colophon</h2>
-<p><em>Spoke Proof</em> is by Hao Lian. If you like what you read, <a href="{{ "/feed.xml" | prepend: site.baseurl }}">subscribe to new posts via RSS</a> or <a href="https://twitter.com/spokeproof">follow @spokeproof on Twitter</a>.</p>
+<h2>The End</h2>
+<p><a href="{{ "/feed.xml" | prepend: site.baseurl }}">rss feed</a> &bull; <a href="https://twitter.com/spokeproof">@spokeproof on Twitter</a> &bull; it's your pal hao lian saying bye bye now</p>
