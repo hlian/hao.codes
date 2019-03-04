@@ -13,7 +13,7 @@ body {
   line-height: 15pt;
 }
 
-pre, code, .post-meta {
+pre, code {
   font-family: "Fantasque Sans Mono", "Menlo", "Consolas", monospace;
   font-size: 12pt;
 }
@@ -94,7 +94,7 @@ a[rev="footnote"] {
 }
 
 code {
-  border-bottom: 2px dashed #b1e4e3;
+  background-color: #fef3e0;
 }
 
 pre {
@@ -102,6 +102,7 @@ pre {
 }
 
 pre code {
+  background: none;
   border-bottom: 0;
 }
 
@@ -159,6 +160,4 @@ blockquote cite::before {
 }
 
 .post-meta {
-  color: #CC148C;
-  vertical-align: top;
 }
