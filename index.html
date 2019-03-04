@@ -23,13 +23,15 @@ layout: default
 
 {% for post in site.posts %}
   {% unless post.title contains 'poopmonster' or forloop.first %}
-    <p>
-      <span class="post-meta" style="padding-right: 10px">{{ post.date | date: "%Y %m %d" }}</span>
+    <ul class="post-meta">
+      <li>
+      <span>{{ post.date | date: "%Y/%m/%d" }}</span>
       <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-    </p>
+      </li>
+    </ul>
   {% endunless %}
 {% endfor %}
 
 
 <h2>The End</h2>
-<p><a href="{{ "/feed.xml" | prepend: site.baseurl }}">rss feed</a> &bull; <a href="https://twitter.com/spokeproof">@spokeproof on Twitter</a> &bull; it's your pal hao lian saying bye bye now</p>
+<p><a href="{{ "/feed.xml" | prepend: site.baseurl }}">rss feed</a> &bull; <a href="https://twitter.com/spokeproof">@spokeproof on Twitter</a></p>
